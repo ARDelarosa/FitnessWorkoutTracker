@@ -1,22 +1,22 @@
 const express = require('express');
 const app = express();
-const {client, createTables} = require('./db');
-const bodyParser = require('body-parser');
+app.use(express.json());
+const {client, createTables,} = require('./db');
 const dotenv = require('dotenv');
-const routes = require('./routes');
-const models = require('./models');
-const { isLoggedIn } = require('./middleware');
-
 dotenv.config();
+const bcrypt = require('bcrypt');
+const routes = require('./routes');
+app.use (routes);
+// app.use("/", ./routes)
+const { createUser, createExercise, fetchAllUsers, getAllExercises } = require('./models');
+// Use routes
 
-
-// returns a middleware that only parses json and only looks at requests where the Content-Type header matches the type option
-app.use(bodyParser.json());
 
 // testing 
 //app.use('/auth', authRoutes);
 //app.use('/workouts', authenticateJWT, workoutRoutes);
 
+// Start server
 const init = async () => {
     const port = process.env.PORT || 3000;
     await client.connect();
@@ -25,20 +25,28 @@ const init = async () => {
     await createTables();
     console.log('Tables created');
 
-    const [john, lucy, david, emmett, barbellSquat, barbellDeadlift, barbellBenchPress, barbellRow, barbellBicepCurl] = await Promise.all([
-        createUser({ username: 'John Smith', password: 'm_pw'}),
-        createUser({ username: 'Lucy Williams', password: 'l_pw'}),
-        createUser({ username: 'David Torres', password: 'e_pw'}),
-        createUser({ username: 'Emmett Brown', password: 'c_pw'}),
-        createExercise({ name: 'Barbell Squat' }),
-        createExercise({ name: 'Barbell Deadlift' }),
-        createExercise({ name: 'Barbell Bench Press' }),
-        createExercise({ name: 'Barbell Row' }),
-        createExercise({ name: 'Barbell Bicep Curl' })
+    const hashedPassword = await Promise.all([
+        bcrypt.hash('admim_pw', 10), // Admin password
+        bcrypt.hash('user_pw', 10),  // User password
+    ])
+
+    const [admin, regularUser, barbellSquat, barbellDeadlift, barbellBenchPress, barbellRow, barbellBicepCurl] = await Promise.all([
+        // creating admin user
+        createUser('Admin', hashedPassword[0], 'admin'), // Role as admin
+
+        // creating regular user
+        createUser('Regular User', hashedPassword[1], 'user'), // Role as user
+
+        // creating exercises
+        createExercise('Barbell Squat', 'legs'),
+        createExercise('Barbell Deadlift', 'legs'),
+        createExercise('Barbell Bench Press', 'chest'),
+        createExercise('Barbell Row', 'back'),
+        createExercise('Barbell Bicep Curl', 'arms'),
       ]);
 
-      console.log(await models.fetchAllUsers());
-      console.log(await models.getAllExercises());
+      console.log('Dummy users created', admin, regularUser);
+      console.log(await getAllExercises());
     
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);

@@ -6,62 +6,15 @@ const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.secret || "shhh";
 
 
-// Authentication
-const authenticate = async({ username, password })=> {
-    const SQL = `
-      SELECT id, username, password
-      FROM users
-      WHERE username=$1;
-    `;
-    const response = await client.query(SQL, [username]);
-    console.log("resonse rows", response.rows);
-    if(!response.rows.length || (await bcrypt.compare(password, response.rows[0].password)) === false){
-      const error = Error('not authorized');
-      error.status = 401;
-      throw error;
-    }
-    const token = await jwt.sign({ id: response.rows[0].id }, jwtSecret);
-    console.log("this is the in authenticate token:", token);
-    return {token: token};
-  };
-
-  const findUserWithToken = async(token)=> {
-    let id;
-    console.log("this is the token:", token);
-    try {
-      const payload = await jwt.verify(token, jwtSecret);
-      id = payload.id;
-    
-    }
-    catch(ex){
-      const error = Error('not authorized');
-      error.status = 401;
-      throw error;
-    }
-    const SQL = `
-      SELECT id, username
-      FROM users 
-      WHERE id=$1;
-    `;
-    const response = await client.query(SQL, [id]);
-    if(!response.rows.length){
-      const error = Error('not authorized');
-      error.status = 401;
-      throw error;
-    }
-    return response.rows[0];
-  };
-
   // User Model Functions
-  const createUser = async (username, password) => {
-    const hashedPassword = await bcrypt.hash(password, 5);
+  const createUser = async (username, hashedPassword, role= 'user') => {
     const SQL = `
-    INSERT INTO users (username, password)
-    VALUES ($1, $2)
-    RETURNING id
+    INSERT INTO users (id, username, password, role)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id, username, role
     `;
-    const result = await client.query(SQL, [uuid.v4(), username, hashedPassword]);
-    return result.rows[0].id;
+    const result = await client.query(SQL, [uuid.v4(), username, hashedPassword, role]);
+    return result.rows[0];
 };
 
 const fetchAllUsers = async () => {
@@ -82,13 +35,22 @@ const getUserById = async (id) => {
     return result.rows[0];
   };
 
+  const getUserByUsername = async (username) => {
+    const SQL = `
+    SELECT * FROM users
+    WHERE LOWER(username) = LOWER($1) -- Case-insensitive username = $1
+    `;
+    const result = await client.query(SQL, [username]);
+    return result.rows[0];
+  };
 const updateUser = async (id, username, password) => {
-    const hashedPassword = await bcrypt.hash(password, 5);
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : null;;
     const SQL = `
     UPDATE users
-    SET username = $2, password = $3
+    SET username = COALESCE($2, username), -- Update username if provided
+        password = COALESCE($3, password) -- Update password if provided
     WHERE id = $1
-    RETURNING *
+    RETURNING id, username, role
     `;
     const result = await client.query(SQL, [id, username, hashedPassword]);
     return result.rows[0];
@@ -111,7 +73,7 @@ const deleteUser = async (id) => {
         VALUES ($1, $2, $3, $4)
         RETURNING *;
       `;
-      const result = await client.query(SQL, [uuid.v4(), userId, name, scheduledDate, status]);
+      const result = await client.query(SQL, [userId, name, scheduledDate, status]);
       return result.rows[0];
   };
 
@@ -144,14 +106,13 @@ const deleteUser = async (id) => {
     return result.rows[0];
   };
 
-  const deleteWorkout = async (id) => {
+  const deleteWorkout = async ({ user_id, id }) => {
     const SQL = `
       DELETE FROM workouts
-      WHERE id = $1
+      WHERE user_id = $1 AND id = $2
       RETURNING *
     `;
-    const result = await client.query(SQL, [id]);
-    return result.rows[0];
+    await client.query(SQL, [user_id, id]);
   };
 
   // Exercise model functions
@@ -161,7 +122,7 @@ const deleteUser = async (id) => {
       VALUES ($1, $2)
       RETURNING *;
     `;
-    const result = await client.query(SQL, [uuid.v4(), name, description]);
+    const result = await client.query(SQL, [name, description]);
     return result.rows[0];
   };
 
@@ -186,7 +147,7 @@ const deleteUser = async (id) => {
     const SQL = `
       UPDATE exercises
       SET name = $1, description = $2, updated_at = NOW()
-      WHERE id = $4
+      WHERE id = $3
       RETURNING *
     `;
     const result = await client.query(SQL, [name, description, id]);
@@ -205,14 +166,25 @@ const deleteUser = async (id) => {
 
   // Workout Session Model Functions
   const createWorkoutSession = async (userId, workoutId, exerciseId, order) => {
+    console.log("Creating workout session for workout_id:", workoutId); // Add logging here
+    console.log("User ID:", userId);
+    console.log("Exercise ID:", exerciseId);
+    console.log("Order:", order);
+
     const SQL = `
       INSERT INTO workout_sessions (user_id, workout_id, exercise_id, "order")
-      VALUES ($1, $2, $3)
+      VALUES ($1, $2, $3, $4)
       RETURNING *;
     `;
-    const result = await client.query(SQL, [uuid.v4(), userId, workoutId, exerciseId, order]);
-    return result.rows[0];
-  }
+    try {
+        const result = await client.query(SQL, [userId, workoutId, exerciseId, order]);
+        console.log("Workout session created:", result.rows[0]);
+        return result.rows[0];
+    } catch (error) {
+        console.error("Error creating workout session:", error.message);
+        throw error; // Ensure we log any errors here
+    }
+};
 
   const getWorkoutSessionByWorkoutId = async (workoutId) => {
     const SQL = `
@@ -223,11 +195,19 @@ const deleteUser = async (id) => {
     const result = await client.query(SQL, [workoutId]);
     return result.rows;
   }
+  const getWorkoutSessionById = async (sessionId) => {
+    const SQL = `
+      SELECT * FROM workout_sessions
+      WHERE id = $1
+    `;
+    const result = await client.query(SQL, [sessionId]);
+    return result.rows[0];
+};
   const updateWorkoutSession = async (id, workoutId, exerciseId, order) => {
     const SQL = `
       UPDATE workout_sessions
       SET exercise_id = $1, workout_id = $2, "order" = $3, updated_at = NOW()
-      WHERE id = $3
+      WHERE id = $4
       RETURNING *
     `;
     const result = await client.query(SQL, [exerciseId, workoutId, order, id]);
@@ -250,7 +230,7 @@ const createComment = async (userId, workoutId, content) => {
     VALUES ($1, $2, $3)
     RETURNING *;
   `;
-  const result = await client.query(SQL, [uuid.v4(), userId, workoutId, content]);
+  const result = await client.query(SQL, [userId, workoutId, content]);
   return result.rows[0];
 };
 
@@ -263,14 +243,28 @@ const getCommentsByWorkoutId = async (workoutId) => {
   return result.rows;
 };
 
-const updateComment = async (content, id) => {
+const getCommentById = async (id) => {
+  const SQL = `
+    SELECT * FROM comments
+    WHERE id = $1
+  `;
+  try {
+    const result = await client.query(SQL, [id]);
+    return result.rows[0]; // Return the first row if found, else undefined
+  } catch (error) {
+    throw new Error(`Error fetching comment by ID: ${error.message}`);
+  }
+};
+
+
+const updateComment = async (content, commentId) => {
   const SQL = `
     UPDATE comments
     SET content = $1, updated_at = NOW()
     WHERE id = $2
     RETURNING *
   `;
-  const result = await client.query(SQL, [content, id]);
+  const result = await client.query(SQL, [content, commentId]);
   return result.rows[0];
 };
 
@@ -286,12 +280,11 @@ const deleteComment = async (id) => {
 
 module.exports = {
     // authentication functions
-    authenticate,
-    findUserWithToken,
 
     // user functions
     createUser,
     getUserById,
+    getUserByUsername,
     fetchAllUsers,
     updateUser,
     deleteUser,
@@ -313,12 +306,14 @@ module.exports = {
     // workout session functions
     createWorkoutSession,
     getWorkoutSessionByWorkoutId,
+    getWorkoutSessionById,
     updateWorkoutSession,
     deleteWorkoutSession,
 
     // comment functions
     createComment,
     getCommentsByWorkoutId,
+    getCommentById,
     updateComment,
     deleteComment
 };

@@ -1,7 +1,5 @@
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:Viper001@localhost:5432/fitness_tracker');
-const bcrypt = require('bcrypt');
-const uuid = require('uuid');
 
 
 const createTables = async () => {
@@ -14,7 +12,8 @@ const createTables = async () => {
     CREATE TABLE users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         username VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(10) DEFAULT 'user'
     );
     CREATE TABLE exercises (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
