@@ -9,6 +9,9 @@ const createTables = async () => {
     DROP TABLE IF EXISTS workouts CASCADE;
     DROP TABLE IF EXISTS workout_sessions CASCADE;
     DROP TABLE IF EXISTS comments CASCADE;
+    DROP TABLE IF EXISTS reviews CASCADE;
+    DROP TABLE IF EXISTS review_comments CASCADE;
+
     CREATE TABLE users (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         username VARCHAR(255) UNIQUE NOT NULL,
@@ -48,6 +51,28 @@ const createTables = async () => {
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
     );
+    CREATE TABLE reviews (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        exercise_id UUID REFERENCES exercises(id),
+        user_id UUID REFERENCES users(id),
+        rating INT CHECK (rating >= 1 AND rating <= 5),  -- Rating between 1 and 5
+        comment TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        CONSTRAINT unique_review UNIQUE (exercise_id, user_id)
+    );
+
+    CREATE TABLE review_comments (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      review_id UUID REFERENCES reviews(id),
+      user_id UUID REFERENCES users(id),
+      content TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    -- Adding an index on exercise_id to speed up exercise search and reviews lookup
+    CREATE INDEX
+       idx_exercise_id ON reviews(exercise_id);
     `;
     await client.query(SQL);
 };

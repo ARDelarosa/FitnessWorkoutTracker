@@ -278,6 +278,148 @@ const deleteComment = async (id) => {
   return result.rows[0];
 };
 
+// Reviews functionsfor non-logged in users and logged in users
+const getAllExercisesWithRatings = async () => {
+  const SQL = `
+    SELECT e.id, e.name, e.description, COALESCE(AVG(r.rating), 0) as avg_rating
+    FROM exercises e
+    LEFT JOIN reviews r ON e.id = r.exercise_id
+    GROUP BY e.id
+    ORDER BY e.name ASC;
+  `;
+  const result = await client.query(SQL);
+  return result.rows;
+};
+
+const getExerciseWithReviews = async (exerciseId) => {
+  const SQL = `
+    SELECT e.id, e.name, e.description, COALESCE(AVG(r.rating), 0) as avg_rating, 
+           json_agg(json_build_object('user_id', r.user_id, 'rating', r.rating, 'comment', r.comment, 'created_at', r.created_at)) AS reviews
+    FROM exercises e
+    LEFT JOIN reviews r ON e.id = r.exercise_id
+    WHERE e.id = $1
+    GROUP BY e.id;
+  `;
+  const result = await client.query(SQL, [exerciseId]);
+  return result.rows[0];  // Only one exercise will be returned
+};
+
+const searchExercisesByName = async (searchTerm) => {
+  const SQL = `
+    SELECT e.id, e.name, e.description, COALESCE(AVG(r.rating), 0) as avg_rating
+    FROM exercises e
+    LEFT JOIN reviews r ON e.id = r.exercise_id
+    WHERE e.name ILIKE '%' || $1 || '%'
+    GROUP BY e.id
+    ORDER BY e.name ASC;
+  `;
+  const result = await client.query(SQL, [searchTerm]);
+  return result.rows;
+};
+
+// Reviews functions for logged in users
+
+// Create a new review
+const upsertReview = async (userId, exerciseId, rating, comment) => {
+  const SQL = `
+    INSERT INTO reviews (user_id, exercise_id, rating, comment)
+    VALUES ($1, $2, $3, $4)
+    ON CONFLICT (user_id, exercise_id) 
+    DO UPDATE SET rating = $3, comment = $4, created_at = NOW()
+    RETURNING *;
+  `;
+  const result = await client.query(SQL, [userId, exerciseId, rating, comment]);
+  return result.rows[0];
+};
+
+// Get a review by ID
+const getReviewById = async (id, userId) => {
+  const SQL = `
+    SELECT * FROM reviews
+    WHERE id = $1 AND user_id = $2
+  `;
+  const result = await client.query(SQL, [id, userId]);
+  return result.rows[0];
+};
+
+
+const getReviewsByUser = async (userId) => {
+  const SQL = `
+    SELECT r.id, r.exercise_id, e.name AS exercise_name, r.rating, r.comment, r.created_at
+    FROM reviews r
+    JOIN exercises e ON r.exercise_id = e.id
+    WHERE r.user_id = $1
+    ORDER BY r.created_at DESC;
+  `;
+  const result = await client.query(SQL, [userId]);
+  return result.rows;
+};
+
+const deleteReview = async (reviewId, userId) => {
+  const SQL = `
+    DELETE FROM reviews
+    WHERE id = $1 AND user_id = $2
+    RETURNING *;
+  `;
+  const result = await client.query(SQL, [reviewId, userId]);
+  return result.rows[0];
+};
+
+const addCommentToReview = async (userId, reviewId, content) => {
+  const SQL = `
+    INSERT INTO review_comments (user_id, review_id, content)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `;
+  const result = await client.query(SQL, [userId, reviewId, content]);
+  return result.rows[0];
+};
+
+const getReviewsCommentById = async (commentId, userId) => {
+  const SQL = `
+    SELECT * FROM review_comments
+    WHERE id = $1 AND user_id = $2
+  `;
+  const result = await client.query(SQL, [commentId, userId]);
+  return result.rows[0];  // Return the comment if found
+};
+
+
+const getCommentsByUser = async (userId) => {
+  const SQL = `
+    SELECT rc.id, rc.review_id, rc.content, rc.created_at, e.name AS exercise_name
+    FROM review_comments rc
+    JOIN reviews r ON rc.review_id = r.id
+    JOIN exercises e ON r.exercise_id = e.id
+    WHERE rc.user_id = $1
+    ORDER BY rc.created_at DESC;
+  `;
+  const result = await client.query(SQL, [userId]);
+  return result.rows;
+};
+
+const editComment = async (commentId, userId, content) => {
+  const SQL = `
+    UPDATE review_comments
+    SET content = $1, updated_at = NOW()
+    WHERE id = $2 AND user_id = $3
+    RETURNING *;
+  `;
+  const result = await client.query(SQL, [content, commentId, userId]);
+  return result.rows[0];
+};
+
+const deleteReviewComment = async (commentId, userId) => {
+  const SQL = `
+    DELETE FROM review_comments
+    WHERE id = $1 AND user_id = $2
+    RETURNING *;
+  `;
+  const result = await client.query(SQL, [commentId, userId]);
+  return result.rows[0];
+};
+
+
 module.exports = {
     // authentication functions
 
@@ -315,5 +457,21 @@ module.exports = {
     getCommentsByWorkoutId,
     getCommentById,
     updateComment,
-    deleteComment
+    deleteComment,
+
+    // reviews for non-logged in users and logged in users
+    getAllExercisesWithRatings,
+    getExerciseWithReviews,
+    searchExercisesByName,
+
+    // reviews for logged in users
+    upsertReview,
+    getReviewsByUser,
+    getReviewById,
+    editComment,
+    deleteReview,
+    addCommentToReview,
+    getReviewsCommentById,
+    getCommentsByUser,
+    deleteReviewComment
 };

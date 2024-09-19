@@ -42,7 +42,22 @@ const {
     createComment,
     getCommentsByWorkoutId,
     updateComment,
-    deleteComment
+    deleteComment,
+
+    // reviews functions
+    getAllExercisesWithRatings,
+    getExerciseWithReviews,
+    searchExercisesByName,
+    upsertReview,
+    getReviewById,
+    getReviewsByUser,
+    editComment,
+    deleteReview,
+    addCommentToReview,
+    getReviewsCommentById,
+    getCommentsByUser,
+    deleteReviewComment
+
  } = require('./models');
 
 // AUTHENTICATION ROUTES reg/login
@@ -415,6 +430,176 @@ router.delete('/api/comments/:id', authenticateJWT, verifyUserOwnsComment,  asyn
         res.status(500).json({ error: error.message });
     }
 });
+
+// Reviews ROUTES
+
+// View all exercises with average rating
+router.get('/api/exercises', async (req, res) => {
+    try {
+      const exercises = await getAllExercisesWithRatings();
+      res.json(exercises);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+// View details of a specific exercise (with reviews)
+router.get('/api/exercises/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const exercise = await getExerciseWithReviews(id);
+    if (exercise) {
+      res.json(exercise);
+    } else {
+      res.status(404).json({ message: 'Exercise not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Serch for exercises by name
+router.get('/api/exercises/search', async (req, res) => {
+    const { query } = req.query;
+    if (!query) {
+      return res.status(400).json({ message: 'Search term is required' });
+    }
+  
+    try {
+      const exercises = await searchExercisesByName(query);
+      res.json(exercises);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+// Submit a review
+router.post('/api/exercises/:exerciseId/reviews', authenticateJWT, async (req, res) => {
+    const { exerciseId } = req.params;
+    const { rating, comment } = req.body;
+    const userId = req.user.id;  // Get logged-in user ID from JWT
+  
+    try {
+      const review = await upsertReview(userId, exerciseId, rating, comment);
+      res.status(201).json(review);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+// View all reviews written by a user
+router.get('/api/users/me/reviews', authenticateJWT, async (req, res) => {
+    const userId = req.user.id;
+  
+    try {
+      const reviews = await getReviewsByUser(userId);
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+// Edit a review
+router.put('/api/reviews/:id', authenticateJWT, async (req, res) => {
+    const { id } = req.params;
+    const { rating, comment } = req.body;
+    const userId = req.user.id;
+  
+    try {
+        // Fetch the existing review first
+        const existingReview = await getReviewById(id, userId);
+        if (!existingReview) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+        // Perform the update
+        const updatedReview = await upsertReview(userId, existingReview.exercise_id, rating, comment);
+        res.status(200).json(updatedReview);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Delete a review
+router.delete('/api/reviews/:id', authenticateJWT, async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+  
+    try {
+      const review = await deleteReview(id, userId);
+      if (review) {
+        res.status(200).json({ message: 'Review deleted successfully' });
+      } else {
+        res.status(404).json({ message: 'Review not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+// Write a comment on another user's review
+router.post('/api/reviews/:reviewId/comments', authenticateJWT, async (req, res) => {
+    const { reviewId } = req.params;
+    const { content } = req.body;
+    const userId = req.user.id;
+  
+    try {
+      const comment = await addCommentToReview(userId, reviewId, content);
+      res.status(201).json(comment);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+// View all comments on a review
+router.get('/api/users/me/comments', authenticateJWT, async (req, res) => {
+    const userId = req.user.id;
+  
+    try {
+      const comments = await getCommentsByUser(userId);
+      res.json(comments);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+// Edit a comment
+router.put('/api/reviews/comments/:id', authenticateJWT, async (req, res) => {
+    const { id } = req.params;
+    const { content } = req.body;
+    const userId = req.user.id;
+  
+    try {
+        // Check if the comment exists before updating
+        const existingComment = await getReviewsCommentById(id, userId);
+        if (!existingComment) {
+          return res.status(404).json({ message: 'Comment not found' });
+        }
+    
+        // Update the comment
+        const updatedComment = await editComment(id, userId, content);
+        res.status(200).json(updatedComment);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+  });
+  
+  // Delete a review comment
+  router.delete('/api/reviews/comments/:id', authenticateJWT, async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+  
+    try {
+      const comment = await deleteReviewComment(id, userId);
+      if (comment) {
+        res.status(200).json({ message: 'Comment deleted successfully' });
+      } else {
+        res.status(404).json({ message: 'Comment not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
 
 // Middleware for admin-only routes
 router.put('/api/admin/update-user/:id', authenticateJWT, isAdmin, async (req, res) => {
