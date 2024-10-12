@@ -1,0 +1,75 @@
+import React, { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../../AuthContext";
+import axios from "axios";
+import ExerciseForm from "./ExerciseForm";
+
+const ExerciseList = () => {
+    const { token } = useContext(AuthContext);
+    const [exercises, setExercises] = useState([]);
+    const [selectedExercise, setSelectedExercise] = useState(null);
+
+    // Fetch exercises from backend
+    useEffect(() => {
+        const fetchExercises = async () => {
+            try {
+                const res = await axios.get("http://localhost:3000/api/exercises", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setExercises(res.data);
+            } catch (err) {
+                console.error("Error fetching exercises:", err);
+            }
+        };
+        fetchExercises();
+    }, [token]);
+
+    // Function to delete an exercise
+    const handleDeleteExercise = async (exerciseId) => {
+        try {
+            await axios.delete(`http://localhost:3000/api/exercises/${exerciseId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            // Remove the deleted exercise from the state to update the UI
+            setExercises((prevExercises) => prevExercises.filter((exercise) => exercise.id !== exerciseId));
+        } catch (err) {
+            console.error("Error deleting exercise:", err);
+        }
+    };
+
+    // Select an exercise for editing
+    const handleEditExercise = (exercise) => {
+        setSelectedExercise(exercise);
+    };
+
+    return (
+        <div>
+            <h2>Exercises</h2>
+            <ul>
+                {exercises.map((exercise) => (
+                    <li key={exercise.id}>
+                        {/* Check if all properties are correctly displayed */}
+                        <img
+                            src={exercise.imageUrl}
+                            alt={exercise.name}
+                            style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                        />
+                        <h3>{exercise.name}</h3>
+                        <p>{exercise.description}</p>
+                        <button onClick={() => handleEditExercise(exercise)}>Edit</button>
+                        <button onClick={() => handleDeleteExercise(exercise.id)}>Delete</button>
+                        </li>
+                ))}
+            </ul>
+
+            {/* Exercise form for creating and editing */}
+            <ExerciseForm
+                token={token}
+                setExercises={setExercises}
+                selectedExercise={selectedExercise}
+                setSelectedExercise={setSelectedExercise}
+            />
+        </div>
+    );
+};
+
+export default ExerciseList;

@@ -24,6 +24,10 @@ const {
     updateWorkout,
     deleteWorkout,
 
+    // workout exercise functions
+    getExercisesByWorkoutId,
+    
+
     // exercise functions
     createExercise,
     getAllExercises,
@@ -97,9 +101,15 @@ router.post('/api/auth/register', async (req, res) => {
 router.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
 
+    // Ensure both fields are provided
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required' });
+  }
+
     try {
         // Find the user by username
         const user = await getUserByUsername(username);
+        console.log("Fetched user:", user);
         if (!user) {
             res.status(401).json({ message: 'Invalid username' });
         }
@@ -114,8 +124,14 @@ router.post('/api/auth/login', async (req, res) => {
         const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
         return res.json({ token, user });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+       // If an error occurs, log it and return a 500 status code
+    console.error('Login error:', error.message);
+    
+    // Ensure that a response is only sent if headers have not already been sent
+    if (!res.headersSent) {
+      return res.status(500).json({ error: error.message })
     }
+  }
 });
 
 // Get all users
@@ -176,8 +192,20 @@ router.delete('/api/users/:id', authenticateJWT, verifyUserOwnership, async (req
 //Get all workouts for the authenticated user (protected)
 router.get('/api/users/:user_id/workouts', async (req, res) => {
     const { user_id } = req.params;
+    const { startDate, endDate } = req.query; // Extract query params
+
     try {
-        const workouts = await getWorkoutByUserId(user_id);
+        let workouts = await getWorkoutByUserId(user_id);
+
+        // Filter workouts by date range
+        if (startDate && endDate) {
+            workouts = workouts.filter(
+                (workout) =>
+                    new Date(workout.scheduled_date) >= new Date(startDate) &&
+                    new Date(workout.scheduled_date) <= new Date(endDate)
+            );
+        }
+
         res.json(workouts);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -199,6 +227,8 @@ router.get('/api/workouts/:workout_id', async (req, res) => {
 router.post('/api/workouts/:user_id', authenticateJWT, async (req, res) => {
     const {  name, scheduled_date, status } = req.body;
     const user_id = req.user.id; // the authenticated user's ID
+    console.log("Request body:", req.body);
+    console.log("User ID:", user_id);
     try {
         const workout = await createWorkout(user_id, name, scheduled_date, status);
         res.status(201).json(workout);
@@ -209,9 +239,9 @@ router.post('/api/workouts/:user_id', authenticateJWT, async (req, res) => {
 
 router.put('/api/workouts/:workout_id', async (req, res) => {
     try {
-        const { id } = req.params;
+        const { workout_id } = req.params;
         const { name, scheduled_date, status } = req.body;
-        const updatedWorkout = await updateWorkout(id, name, scheduled_date, status);
+        const updatedWorkout = await updateWorkout(workout_id, name, scheduled_date, status);
         res.json(updatedWorkout);
     } catch (error) {
         res.status(404).json({ message: 'Workout not found' });
@@ -264,19 +294,20 @@ router.post('/api/exercises', async (req, res) => {
 router.put('/api/exercises/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description } = req.body;
-        const updatedExercise = await updateExercise(id, name, description);
+        const { name, description, imageUrl } = req.body;
+        const updatedExercise = await updateExercise(id, name, description, imageUrl);
         res.json(updatedExercise);
     } catch (error) {
         res.status(500).json({ error: error.message });
     } 
 });
 
-router.delete('/api/exercises/:id', async (req, res) => {
+router.delete('/api/exercises/:id', async (req, res, next) => {
     try {
     await deleteExercise(req.params.id);
     res.status(204).end();
     } catch (error) {
+        console.error("error deleting exercise", error);
         next(error)
     }
 });
@@ -301,7 +332,7 @@ router.get('/api/workouts/:workout_id/sessions', authenticateJWT, verifyUserOwns
 
 // create a new workout session (only if the user owns the workout)
 router.post('/api/workout_sessions', authenticateJWT, verifyUserOwnsWorkout, async (req, res) => {
-    const { workout_id, exercise_id, order } = req.body;
+    const { workout_id, exercise_id, sets, reps} = req.body;
     const user_id = req.user.id; // the authenticated user's ID
 
     console.log('Request Body:', req.body);
@@ -311,7 +342,7 @@ router.post('/api/workout_sessions', authenticateJWT, verifyUserOwnsWorkout, asy
             return res.status(400).json({ message: 'workout_id is required' });
         }
 
-        const workoutSession = await createWorkoutSession(user_id, workout_id, exercise_id, order);
+        const workoutSession = await createWorkoutSession(user_id, workout_id, exercise_id, sets, reps);
         res.status(201).json(workoutSession);
     } catch (error) {
         console.error('Error creating workout session:', error.message);
@@ -321,10 +352,11 @@ router.post('/api/workout_sessions', authenticateJWT, verifyUserOwnsWorkout, asy
 
 // update an existing workout session (only if the user owns the workout)
 router.put('/api/workouts/sessions/:id', authenticateJWT, verifyUserOwnsWorkout, async (req, res) => {
+  console.log("request body", req.body);
     const { id } = req.params;
-    const {workout_id, exercise_id, order } = req.body;
+    const {workout_id, exercise_id, sets, reps } = req.body;
     try {
-        const updatedSession = await updateWorkoutSession(id, workout_id, exercise_id, order);
+        const updatedSession = await updateWorkoutSession(id, workout_id, exercise_id, sets, reps);
         if (updatedSession) {
             res.json(updatedSession);
         } else {
@@ -434,7 +466,7 @@ router.delete('/api/comments/:id', authenticateJWT, verifyUserOwnsComment,  asyn
 // Reviews ROUTES
 
 // View all exercises with average rating
-router.get('/api/exercises', async (req, res) => {
+router.get('/api/exercises/ratings', async (req, res) => {
     try {
       const exercises = await getAllExercisesWithRatings();
       res.json(exercises);
@@ -444,7 +476,7 @@ router.get('/api/exercises', async (req, res) => {
   });
   
 // View details of a specific exercise (with reviews)
-router.get('/api/exercises/:id', async (req, res) => {
+router.get('/api/exercises/reviews/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const exercise = await getExerciseWithReviews(id);

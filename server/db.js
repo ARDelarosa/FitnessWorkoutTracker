@@ -8,6 +8,7 @@ const createTables = async () => {
     DROP TABLE IF EXISTS exercises CASCADE;
     DROP TABLE IF EXISTS workouts CASCADE;
     DROP TABLE IF EXISTS workout_sessions CASCADE;
+    DROP TABLE IF EXISTS workout_exercises CASCADE;
     DROP TABLE IF EXISTS comments CASCADE;
     DROP TABLE IF EXISTS reviews CASCADE;
     DROP TABLE IF EXISTS review_comments CASCADE;
@@ -22,24 +23,34 @@ const createTables = async () => {
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT,
+        imageUrl VARCHAR(255),
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
     );
     CREATE TABLE workouts (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id uuid REFERENCES users(id) NOT NULL,
-        name VARCHAR(255) UNIQUE NOT NULL,
-        scheduled_date TIMESTAMPTZ,
+        name VARCHAR(255) NOT NULL,
+        scheduled_date DATE NOT NULL,
         status VARCHAR(255),
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
     );
+
+    CREATE TABLE workout_exercises (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        workout_id UUID REFERENCES workouts(id),
+        exercise_id UUID REFERENCES exercises(id),
+        created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
     CREATE TABLE workout_sessions (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id uuid REFERENCES users(id) NOT NULL,
         workout_id uuid REFERENCES workouts(id),
         exercise_id uuid REFERENCES exercises(id),
-        "order" INTEGER NOT NULL,
+        "sets" INTEGER NOT NULL DEFAULT 3,
+        "reps" INTEGER NOT NULL DEFAULT 10,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
     );

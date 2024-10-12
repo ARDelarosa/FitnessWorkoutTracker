@@ -1,7 +1,10 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+app.use(cors());
 app.use(express.json());
 const {client, createTables,} = require('./db');
+const { seedExercises } = require('./seed');
 const dotenv = require('dotenv');
 dotenv.config();
 const bcrypt = require('bcrypt');
@@ -25,10 +28,13 @@ const init = async () => {
     await createTables();
     console.log('Tables created');
 
+    await seedExercises();
+    console.log('Exercises seeded');
+
     const hashedPassword = await Promise.all([
         bcrypt.hash('admim_pw', 10), // Admin password
         bcrypt.hash('user_pw', 10),  // User password
-    ])
+    ]);
 
     const [admin, regularUser, barbellSquat, barbellDeadlift, barbellBenchPress, barbellRow, barbellBicepCurl] = await Promise.all([
         // creating admin user
@@ -37,20 +43,20 @@ const init = async () => {
         // creating regular user
         createUser('Regular User', hashedPassword[1], 'user'), // Role as user
 
-        // creating exercises
+        /* creating exercises
         createExercise('Barbell Squat', 'legs'),
         createExercise('Barbell Deadlift', 'legs'),
         createExercise('Barbell Bench Press', 'chest'),
         createExercise('Barbell Row', 'back'),
-        createExercise('Barbell Bicep Curl', 'arms'),
+        createExercise('Barbell Bicep Curl', 'arms'),*/
       ]);
 
-      console.log('Dummy users created', admin, regularUser);
+      console.log('Dummy users created', admin, regularUser)
       console.log(await getAllExercises());
     
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
-}
+};
 
 init();

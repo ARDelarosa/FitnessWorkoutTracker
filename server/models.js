@@ -5,7 +5,6 @@ const { client } = require('./db');
 const jwt = require('jsonwebtoken');
 const jwtSecret = process.env.secret || "shhh";
 
-
   // User Model Functions
   const createUser = async (username, hashedPassword, role= 'user') => {
     const SQL = `
@@ -68,13 +67,19 @@ const deleteUser = async (id) => {
 
   // Workout model functions
   const createWorkout = async (userId, name, scheduledDate, status) => {
+    console.log("Creating workout in DB with:", userId, name, scheduledDate, status);
       const SQL = `
         INSERT INTO workouts (user_id, name, scheduled_date, status)
         VALUES ($1, $2, $3, $4)
         RETURNING *;
       `;
+      try {
       const result = await client.query(SQL, [userId, name, scheduledDate, status]);
       return result.rows[0];
+    } catch (err) {
+      console.error("Error creating workout:", err);
+      throw err;
+    }
   };
 
   const getWorkoutByUserId = async (userId) => {
@@ -143,41 +148,48 @@ const deleteUser = async (id) => {
     return result.rows[0];
   };
 
-  const updateExercise = async (id, name, description) => {
+  const updateExercise = async (id, name, description, imageUrl) => {
     const SQL = `
       UPDATE exercises
-      SET name = $1, description = $2, updated_at = NOW()
-      WHERE id = $3
+      SET name = $1, description = $2, imageUrl = $3, updated_at = NOW()
+      WHERE id = $4
       RETURNING *
     `;
-    const result = await client.query(SQL, [name, description, id]);
-    return result.rows[0];
+    try {
+      const result = await client.query(SQL, [name, description, imageUrl ,id]);
+      return result.rows[0];
+    } catch (err) {
+      console.error('Error updating exercise:', err.message);
+      throw err;
+    }
   };
 
   const deleteExercise = async (id) => {
+    await client.query(`DELETE FROM reviews WHERE exercise_id = $1`, [id]);
     const SQL = `
       DELETE FROM exercises
       WHERE id = $1
-      RETURNING *
+      RETURNING *;
     `;
     const result = await client.query(SQL, [id]);
     return result.rows[0];
   };
-
+  
   // Workout Session Model Functions
-  const createWorkoutSession = async (userId, workoutId, exerciseId, order) => {
+  const createWorkoutSession = async (userId, workoutId, exerciseId, sets, reps) => {
     console.log("Creating workout session for workout_id:", workoutId); // Add logging here
     console.log("User ID:", userId);
     console.log("Exercise ID:", exerciseId);
-    console.log("Order:", order);
+    console.log("Sets:", sets);
+    console.log("Reps:", reps);
 
     const SQL = `
-      INSERT INTO workout_sessions (user_id, workout_id, exercise_id, "order")
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO workout_sessions (user_id, workout_id, exercise_id, sets, reps)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
     try {
-        const result = await client.query(SQL, [userId, workoutId, exerciseId, order]);
+        const result = await client.query(SQL, [userId, workoutId, exerciseId, sets, reps]);
         console.log("Workout session created:", result.rows[0]);
         return result.rows[0];
     } catch (error) {
@@ -190,7 +202,6 @@ const deleteUser = async (id) => {
     const SQL = `
       SELECT * FROM workout_sessions
       WHERE workout_id = $1
-      ORDER BY "order"
     `;
     const result = await client.query(SQL, [workoutId]);
     return result.rows;
@@ -203,14 +214,14 @@ const deleteUser = async (id) => {
     const result = await client.query(SQL, [sessionId]);
     return result.rows[0];
 };
-  const updateWorkoutSession = async (id, workoutId, exerciseId, order) => {
+  const updateWorkoutSession = async (id, workoutId, exerciseId, sets, reps) => {
     const SQL = `
       UPDATE workout_sessions
-      SET exercise_id = $1, workout_id = $2, "order" = $3, updated_at = NOW()
-      WHERE id = $4
+      SET exercise_id = $1, workout_id = $2, sets = $3, reps = $4, updated_at = NOW()
+      WHERE id = $5
       RETURNING *
     `;
-    const result = await client.query(SQL, [exerciseId, workoutId, order, id]);
+    const result = await client.query(SQL, [exerciseId, workoutId, sets, reps, id]);
     return result.rows[0];
   }
   const deleteWorkoutSession = async (id) => {
@@ -383,7 +394,6 @@ const getReviewsCommentById = async (commentId, userId) => {
   const result = await client.query(SQL, [commentId, userId]);
   return result.rows[0];  // Return the comment if found
 };
-
 
 const getCommentsByUser = async (userId) => {
   const SQL = `
