@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.secret || "shhh";
 const { getUserById, getWorkoutById, getCommentById } = require('./models');
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://fitnessworkouttracker.onrender.com' // URL of your frontend
+}));
+
 
 // Middleware to authenticate JWT
 const authenticateJWT = async (req, res, next) => {
