@@ -23,11 +23,7 @@ const {
     getWorkoutById,
     updateWorkout,
     deleteWorkout,
-
-    // workout exercise functions
-    getExercisesByWorkoutId,
     
-
     // exercise functions
     createExercise,
     getAllExercises,

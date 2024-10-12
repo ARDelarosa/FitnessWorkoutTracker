@@ -11,7 +11,7 @@ const bcrypt = require('bcrypt');
 const routes = require('./routes');
 app.use (routes);
 // app.use("/", ./routes)
-const { createUser, createExercise, fetchAllUsers, getAllExercises } = require('./models');
+const { createUser, getAllExercises } = require('./models');
 // Use routes
 
 
