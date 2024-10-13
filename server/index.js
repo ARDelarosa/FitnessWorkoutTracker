@@ -1,16 +1,12 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-app.use(express.json());
 const {client, createTables,} = require('./db');
 const { seedExercises } = require('./seed');
 const dotenv = require('dotenv');
 dotenv.config();
 const bcrypt = require('bcrypt');
 const routes = require('./routes');
-app.use (routes);
-// app.use("/", ./routes)
-const { createUser, getAllExercises } = require('./models');
 // Use routes
 
 
@@ -36,6 +32,12 @@ const allowedOrigins = [
     credentials: true,  // If you're using cookies, you may need this
   }));
 
+  app.use(express.json());
+
+  app.use (routes);
+// app.use("/", ./routes)
+const { createUser, getAllExercises } = require('./models');
+
   // Handle preflight requests globally
 app.options('*', cors({
     origin: function (origin, callback) {
@@ -45,6 +47,7 @@ app.options('*', cors({
         callback(new Error('Not allowed by CORS'));
       }
     },
+    credentials: true,
   }));
   
 const init = async () => {
