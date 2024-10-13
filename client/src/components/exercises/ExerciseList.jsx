@@ -28,13 +28,13 @@ const ExerciseList = () => {
     useEffect(() => {
     const fetchAllExercisesWithReviews = async () => {
         try {
-            const res = await axios.get("https://fitnessworkouttracker.onrender.com/api/exercises", {
+            const res = await axios.get("https://fitnessworkouttracker-1.onrender.com/api/exercises", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             // For each exercise, fetch its reviews
             const exercisesWithReviews = await Promise.all(
                 res.data.map(async (exercise) => {
-                    const exerciseDetails = await axios.get(`https://fitnessworkouttracker.onrender.com/api/exercises/reviews/${exercise.id}`, {
+                    const exerciseDetails = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/exercises/reviews/${exercise.id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     return exerciseDetails.data;
@@ -62,7 +62,7 @@ const ExerciseList = () => {
     // Fetch updated reviews for a specific exercise after submitting a review
 const fetchExerciseWithReviews = async (exerciseId) => {
     try {
-        const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/exercises/reviews/${exerciseId}`, {
+        const res = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/exercises/reviews/${exerciseId}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         setExercises((prevExercises) =>
@@ -79,7 +79,7 @@ const fetchExerciseWithReviews = async (exerciseId) => {
     const handleReviewSubmit = async (exerciseId) => {
         try {
             await axios.post(
-                `https://fitnessworkouttracker.onrender.com/api/exercises/${exerciseId}/reviews`,
+                `https://fitnessworkouttracker-1.onrender.com/api/exercises/${exerciseId}/reviews`,
                 { rating: ratings[exerciseId], comment: comments[exerciseId] },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -97,7 +97,7 @@ const fetchExerciseWithReviews = async (exerciseId) => {
     const handleCommentSubmit = async (reviewId, exerciseId) => {
         try {
             await axios.post(
-                `https://fitnessworkouttracker.onrender.com/api/reviews/${reviewId}/comments`,
+                `https://fitnessworkouttracker-1.onrender.com/api/reviews/${reviewId}/comments`,
                 { content: reviewComments[reviewId] || '' },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
