@@ -118,6 +118,7 @@ router.post('/api/auth/login', async (req, res) => {
 
         // Generate a JWT token
         const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
+        console.log("Generated token:", token);
         return res.json({ token, user });
     } catch (error) {
        // If an error occurs, log it and return a 500 status code
