@@ -1,7 +1,11 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+    origin: 'https://fitnessworkouttracker.onrender.com',  // Replace with your actual frontend URL
+    methods: 'GET,POST,PUT,DELETE',  // Specify allowed methods
+    credentials: true  // If you're using cookies with CORS
+  }));
 app.use(express.json());
 const {client, createTables,} = require('./db');
 const { seedExercises } = require('./seed');

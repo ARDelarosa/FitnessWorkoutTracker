@@ -17,7 +17,7 @@ const Login = () => {
             // clear any previous errors
             setError("");
 
-            const res = await axios.post("https://fitnessworkouttracker.onrender.com/api/auth/login", {
+            const res = await axios.post('https://fitnessworkouttracker.onrender.com/api/auth/login', {
                 username,
                 password 
             });
@@ -26,7 +26,7 @@ const Login = () => {
             console.log("Response from backend: ", res.data);
 
             // Check that token and user data are present
-            const { token, user } = res.data.data;
+            const { token, user } = res.data;
             if (!token || !user) {
                 console.error("missing token or user in response", res.data);
                 return;
