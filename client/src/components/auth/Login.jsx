@@ -26,7 +26,7 @@ const Login = () => {
             console.log("Response from backend: ", res.data);
 
             // Check that token and user data are present
-            const { token, user } = res.data;
+            const { token, user } = res.data.data;
             if (!token || !user) {
                 console.error("missing token or user in response", res.data);
                 return;
