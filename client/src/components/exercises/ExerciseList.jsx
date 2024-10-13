@@ -15,7 +15,7 @@ const ExerciseList = () => {
     // Define fetchExercises outside of useEffect so it can be reused
     const fetchExercises = async () => {
         try {
-            const res = await axios.get("https://fitnessworkouttracker.onrender.com/api/exercises", {
+            const res = await axios.get(`https://fitnessworkouttracker-1.onrender.comm/api/exercises`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setExercises(res.data);
@@ -28,7 +28,7 @@ const ExerciseList = () => {
     useEffect(() => {
     const fetchAllExercisesWithReviews = async () => {
         try {
-            const res = await axios.get("https://fitnessworkouttracker-1.onrender.com/api/exercises", {
+            const res = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/exercises`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             // For each exercise, fetch its reviews
