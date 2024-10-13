@@ -17,7 +17,7 @@ const Login = () => {
             // clear any previous errors
             setError("");
 
-            const res = await axios.post(`https://fitnessworkouttracker-1.onrender.com`, {
+            const res = await axios.post("https://fitnessworkouttracker.onrender.com/api/auth/login", {
                 username,
                 password 
             });
