@@ -118,7 +118,7 @@ const fetchExerciseWithReviews = async (exerciseId) => {
     // Function to delete an exercise
     const handleDeleteExercise = async (exerciseId) => {
         try {
-            await axios.delete(`https://fitnessworkouttracker.onrender.com/api/exercises/${exerciseId}`, {
+            await axios.delete(`https://fitnessworkouttracker-1.onrender.com/api/exercises/${exerciseId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setExercises((prevExercises) => prevExercises.filter((exercise) => exercise.id !== exerciseId));

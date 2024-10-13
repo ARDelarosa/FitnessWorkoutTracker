@@ -19,14 +19,14 @@ const CommentForm = ({ workoutId, token, selectedComment, setSelectedComment, on
       if (selectedComment) {
         // Update existing comment
         await axios.put(
-          `https://fitnessworkouttracker.onrender.com/api/comments/${selectedComment.id}`,
+          `https://fitnessworkouttracker-1.onrender.com/api/comments/${selectedComment.id}`,
           { content },
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } else {
         // Add a new comment
         await axios.post(
-          "https://fitnessworkouttracker.onrender.com/api/comments",
+          `https://fitnessworkouttracker-1.onrender.com/api/comments`,
           { workout_id: workoutId, content },
           { headers: { Authorization: `Bearer ${token}` } }
         );

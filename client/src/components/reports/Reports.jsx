@@ -13,7 +13,7 @@ const Reports = () => {
     // Fetch workouts for the user within the specified date range
     const fetchWorkoutsReport = async () => {
         try {
-            const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/users/${user.id}/workouts`, {
+            const res = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/users/${user.id}/workouts`, {
                 headers: { Authorization: `Bearer ${token}` },
                 params: { startDate, endDate },
             });

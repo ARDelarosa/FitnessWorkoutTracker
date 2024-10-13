@@ -119,7 +119,7 @@ const WorkoutSessionList = () => {
     // Delete a session
     const handleDeleteSession = async (sessionId) => {
         try {
-            await axios.delete(`https://fitnessworkouttracker.onrender.com/workouts/sessions/${sessionId}`, {
+            await axios.delete(`https://fitnessworkouttracker-1.onrender.com/api/workouts/sessions/${sessionId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setSessions((prevSessions) => prevSessions.filter((session) => session.id !== sessionId));
