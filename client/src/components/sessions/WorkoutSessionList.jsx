@@ -22,7 +22,7 @@ const WorkoutSessionList = () => {
     useEffect(() => {
         const fetchSessions = async () => {
             try {
-                const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/workouts/${workoutId}/sessions`, {
+                const res = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/workouts/${workoutId}/sessions`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setSessions(res.data);
@@ -33,7 +33,7 @@ const WorkoutSessionList = () => {
 
         const fetchExercises = async () => {
             try {
-                const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/exercises`, {
+                const res = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/exercises`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setExercises(res.data);
@@ -67,7 +67,7 @@ const WorkoutSessionList = () => {
             if (isEditing) {
                 // Update session
                 await axios.put(
-                  `https://fitnessworkouttracker.onrender.com/api/workouts/sessions/${sessionToEdit}`,
+                  `https://fitnessworkouttracker-1.onrender.com/api/workouts/sessions/${sessionToEdit}`,
                   { 
                       workout_id: workoutId, 
                       exercise_id: newSession.exercise_id, 
@@ -79,7 +79,7 @@ const WorkoutSessionList = () => {
             } else {
                 // Create new session
                 const res = await axios.post(
-                    "https://fitnessworkouttracker.onrender.com/api/workout_sessions",
+                    `https://fitnessworkouttracker-1.onrender.com/api/workout_sessions`,
                     { 
                       workout_id: workoutId, 
                       exercise_id: newSession.exercise_id, 
