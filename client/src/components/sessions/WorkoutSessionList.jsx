@@ -22,7 +22,7 @@ const WorkoutSessionList = () => {
     useEffect(() => {
         const fetchSessions = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/workouts/${workoutId}/sessions`, {
+                const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/workouts/${workoutId}/sessions`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setSessions(res.data);
@@ -33,7 +33,7 @@ const WorkoutSessionList = () => {
 
         const fetchExercises = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/exercises`, {
+                const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/exercises`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setExercises(res.data);
@@ -67,7 +67,7 @@ const WorkoutSessionList = () => {
             if (isEditing) {
                 // Update session
                 await axios.put(
-                  `http://localhost:3000/api/workouts/sessions/${sessionToEdit}`,
+                  `https://fitnessworkouttracker.onrender.com/api/workouts/sessions/${sessionToEdit}`,
                   { 
                       workout_id: workoutId, 
                       exercise_id: newSession.exercise_id, 
@@ -79,7 +79,7 @@ const WorkoutSessionList = () => {
             } else {
                 // Create new session
                 const res = await axios.post(
-                    "http://localhost:3000/api/workout_sessions",
+                    "https://fitnessworkouttracker.onrender.com/api/workout_sessions",
                     { 
                       workout_id: workoutId, 
                       exercise_id: newSession.exercise_id, 
@@ -119,7 +119,7 @@ const WorkoutSessionList = () => {
     // Delete a session
     const handleDeleteSession = async (sessionId) => {
         try {
-            await axios.delete(`http://localhost:3000/api/workouts/sessions/${sessionId}`, {
+            await axios.delete(`https://fitnessworkouttracker.onrender.com/workouts/sessions/${sessionId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setSessions((prevSessions) => prevSessions.filter((session) => session.id !== sessionId));

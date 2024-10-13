@@ -15,7 +15,7 @@ const ExerciseList = () => {
     // Define fetchExercises outside of useEffect so it can be reused
     const fetchExercises = async () => {
         try {
-            const res = await axios.get("http://localhost:3000/api/exercises", {
+            const res = await axios.get("https://fitnessworkouttracker.onrender.com/api/exercises", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setExercises(res.data);
@@ -28,13 +28,13 @@ const ExerciseList = () => {
     useEffect(() => {
     const fetchAllExercisesWithReviews = async () => {
         try {
-            const res = await axios.get("http://localhost:3000/api/exercises", {
+            const res = await axios.get("https://fitnessworkouttracker.onrender.com/api/exercises", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             // For each exercise, fetch its reviews
             const exercisesWithReviews = await Promise.all(
                 res.data.map(async (exercise) => {
-                    const exerciseDetails = await axios.get(`http://localhost:3000/api/exercises/reviews/${exercise.id}`, {
+                    const exerciseDetails = await axios.get(`https://fitnessworkouttracker.onrender.com/api/exercises/reviews/${exercise.id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     return exerciseDetails.data;
@@ -62,7 +62,7 @@ const ExerciseList = () => {
     // Fetch updated reviews for a specific exercise after submitting a review
 const fetchExerciseWithReviews = async (exerciseId) => {
     try {
-        const res = await axios.get(`http://localhost:3000/api/exercises/reviews/${exerciseId}`, {
+        const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/exercises/reviews/${exerciseId}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         setExercises((prevExercises) =>
@@ -79,7 +79,7 @@ const fetchExerciseWithReviews = async (exerciseId) => {
     const handleReviewSubmit = async (exerciseId) => {
         try {
             await axios.post(
-                `http://localhost:3000/api/exercises/${exerciseId}/reviews`,
+                `https://fitnessworkouttracker.onrender.com/api/exercises/${exerciseId}/reviews`,
                 { rating: ratings[exerciseId], comment: comments[exerciseId] },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -97,7 +97,7 @@ const fetchExerciseWithReviews = async (exerciseId) => {
     const handleCommentSubmit = async (reviewId, exerciseId) => {
         try {
             await axios.post(
-                `http://localhost:3000/api/reviews/${reviewId}/comments`,
+                `https://fitnessworkouttracker.onrender.com/api/reviews/${reviewId}/comments`,
                 { content: reviewComments[reviewId] || '' },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -118,7 +118,7 @@ const fetchExerciseWithReviews = async (exerciseId) => {
     // Function to delete an exercise
     const handleDeleteExercise = async (exerciseId) => {
         try {
-            await axios.delete(`http://localhost:3000/api/exercises/${exerciseId}`, {
+            await axios.delete(`https://fitnessworkouttracker.onrender.com/api/exercises/${exerciseId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setExercises((prevExercises) => prevExercises.filter((exercise) => exercise.id !== exerciseId));

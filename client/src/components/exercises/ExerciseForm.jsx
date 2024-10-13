@@ -36,7 +36,7 @@ const ExerciseForm = ({ setExercises, selectedExercise, setSelectedExercise }) =
             // Update existing exercise
             try {
                 const res = await axios.put(
-                    `http://localhost:3000/api/exercises/${selectedExercise.id}`,
+                    `https://fitnessworkouttracker.onrender.com/api/exercises/${selectedExercise.id}`,
                     exerciseData,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
@@ -53,7 +53,7 @@ const ExerciseForm = ({ setExercises, selectedExercise, setSelectedExercise }) =
             // Create new exercise
             try {
                 const res = await axios.post(
-                    "http://localhost:3000/api/exercises",
+                    "https://fitnessworkouttracker.onrender.com/api/exercises",
                     exerciseData,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );

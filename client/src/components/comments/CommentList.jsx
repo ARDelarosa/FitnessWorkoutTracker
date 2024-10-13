@@ -8,7 +8,7 @@ const CommentList = ({ workoutId, token, refreshComments, onEditComment }) => {
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/comments/${workoutId}`, {
+                const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/comments/${workoutId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setComments(res.data);
@@ -24,7 +24,7 @@ const CommentList = ({ workoutId, token, refreshComments, onEditComment }) => {
     // Handle delete comment
     const handleDeleteComment = async (commentId) => {
         try {
-            await axios.delete(`http://localhost:3000/api/comments/${commentId}`, {
+            await axios.delete(`https://fitnessworkouttracker.onrender.com/api/comments/${commentId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             // Remove the deleted comment from the state to update the UI

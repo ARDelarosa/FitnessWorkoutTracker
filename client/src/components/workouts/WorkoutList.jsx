@@ -38,7 +38,7 @@ const formatDate = (dateString) => {
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/users/${user.id}/workouts`, {
+        const res = await axios.get(`https://fitnessworkouttracker.onrender.com/api/users/${user.id}/workouts`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setWorkouts(Array.isArray(res.data) ? res.data : []);
@@ -74,7 +74,7 @@ const formatDate = (dateString) => {
       if (isEditing) {
         // Update workout
         await axios.put(
-          `http://localhost:3000/api/workouts/${workoutToEdit}`,
+          `https://fitnessworkouttracker.onrender.com/api/workouts/${workoutToEdit}`,
           { name: newWorkout.name, scheduled_date: formattedDate, status: newWorkout.status },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -90,7 +90,7 @@ const formatDate = (dateString) => {
       } else {
         // Create workout
         const res = await axios.post(
-          `http://localhost:3000/api/workouts/${user.id}`,
+          `https://fitnessworkouttracker.onrender.com/api/workouts/${user.id}`,
           { name: newWorkout.name, scheduled_date: formattedDate, status: newWorkout.status },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -125,7 +125,7 @@ const formatDate = (dateString) => {
   // Handle deleting a workout
   const handleDeleteWorkout = async (workoutId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/users/${user.id}/workouts/${workoutId}`, {
+      await axios.delete(`https://fitnessworkouttracker.onrender.com/api/users/${user.id}/workouts/${workoutId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout.id !== workoutId));
