@@ -1,11 +1,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-app.use(cors({
-    origin: 'https://fitnessworkouttracker.onrender.com',  // Replace with your actual frontend URL
-    methods: 'GET,POST,PUT,DELETE',  // Specify allowed methods
-    credentials: true  // If you're using cookies with CORS
-  }));
 app.use(express.json());
 const {client, createTables,} = require('./db');
 const { seedExercises } = require('./seed');
@@ -24,6 +19,34 @@ const { createUser, getAllExercises } = require('./models');
 //app.use('/workouts', authenticateJWT, workoutRoutes);
 
 // Start server
+
+const allowedOrigins = [
+    'https://fitnessworkouttracker.onrender.com', // Deployed frontend URL
+    'http://localhost:5173',                      // Local frontend URL for development
+  ];
+
+  app.use(cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,  // If you're using cookies, you may need this
+  }));
+
+  // Handle preflight requests globally
+app.options('*', cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);  // Allow request
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  }));
+  
 const init = async () => {
     const port = process.env.PORT || 3000;
     await client.connect();
