@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
       const storedUser = localStorage.getItem("user");
+      console.log("Stored user in localStorage:", localStorage.getItem("user"));
 
       if (!storedUser) {
         return null;
@@ -12,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       
       try {
         return JSON.parse(storedUser);
-      } catch (error) {
+      } catch (error) { 
         console.error("Error parsing stored user:", error);
         return null;
       }
@@ -48,8 +49,6 @@ export const AuthProvider = ({ children }) => {
         console.log("Logging in with sanitized user: ", sanitizedUser);
         setToken(token);
         setUser(sanitizedUser);
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(sanitizedUser));
     };
 
     const logout = (navigate) => {

@@ -121,8 +121,10 @@ router.post('/api/auth/login', async (req, res) => {
         // Generate a JWT token
         const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
         console.log("Generated token:", token);
-        return res.json({ token, user });
-    } catch (error) {
+
+       // Return the token and the sanitized user object
+        return res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
+        } catch (error) {
        // If an error occurs, log it and return a 500 status code
     console.error('Login error:', error.message);
     

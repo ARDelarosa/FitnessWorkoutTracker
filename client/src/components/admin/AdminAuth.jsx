@@ -16,6 +16,15 @@ const AdminPanel = () => {
       try {
         const token = localStorage.getItem('token');
         console.log("Token:", token);
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!token || !user || user.role !== 'admin') {
+            console.error("Unauthorized access: Not an admin or missing token");
+            return;  // Handle unauthorized access here
+          }
+
+          console.log("Token:", token);
+
         const response = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/users`, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -51,7 +60,7 @@ const AdminPanel = () => {
   const handleDeleteUser = async (userId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`https://fitnessworkouttracker-1.onrender.com/api/admin/delete-user/${userId}`, {
+      await axios.delete(`https://fitnessworkouttracker-1.onrender.com/api/admin-only-route`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));

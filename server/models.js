@@ -28,6 +28,7 @@ const fetchAllUsers = async () => {
 const getUserById = async (id) => {
     const SQL = `
     SELECT id, username, role
+    FROM users
     WHERE id = $1
     `;
     const result = await client.query(SQL, [id]);

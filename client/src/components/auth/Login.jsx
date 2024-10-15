@@ -34,7 +34,8 @@ const Login = () => {
 
             // Store token and user info (including role) in localStorage
             localStorage.setItem('token', token);
-            localStorage.setItem('role', user.role);  // Store the user's role
+            // Store user object in localStorage (without sensitive data)
+            localStorage.setItem('user', JSON.stringify({ id: user.id, username: user.username, role: user.role }));
 
             // Debugging log: Check vaules being passed to login function
             console.log("Logging in with token: ", token, "and user: ", user);

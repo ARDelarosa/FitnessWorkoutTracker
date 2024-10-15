@@ -15,10 +15,11 @@ import './App.css';
 
 // AdminRoute component for protecting admin routes
 const AdminRoute = ({ children }) => {
-  const role = localStorage.getItem('role'); // Assuming the user role is stored in localStorage
+  const token = localStorage.getItem('token');  // Get the token
+  const role = localStorage.getItem('role');  // Get the role
 
-  if (role !== 'admin') {
-    // If the user is not an admin, redirect to login or another route
+  if (!token || role !== 'admin') {
+    // If the user is not logged in or not an admin, redirect to login
     return <Navigate to="/login" />;
   }
 
