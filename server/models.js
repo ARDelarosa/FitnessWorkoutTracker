@@ -27,7 +27,7 @@ const fetchAllUsers = async () => {
 
 const getUserById = async (id) => {
     const SQL = `
-    SELECT * FROM users
+    SELECT id, username, role
     WHERE id = $1
     `;
     const result = await client.query(SQL, [id]);
@@ -304,7 +304,7 @@ const getAllExercisesWithRatings = async () => {
 
 const getExerciseWithReviews = async (exerciseId) => {
   const SQL = `
-    SELECT e.id, e.name, e.description, COALESCE(AVG(r.rating), 0) as avg_rating, 
+    SELECT e.id, e.name, e.description, e.imageurl, COALESCE(AVG(r.rating), 0) as avg_rating, 
            json_agg(json_build_object('user_id', r.user_id, 'rating', r.rating, 'comment', r.comment, 'created_at', r.created_at)) AS reviews
     FROM exercises e
     LEFT JOIN reviews r ON e.id = r.exercise_id
@@ -312,6 +312,7 @@ const getExerciseWithReviews = async (exerciseId) => {
     GROUP BY e.id;
   `;
   const result = await client.query(SQL, [exerciseId]);
+  console.log(result.rows);
   return result.rows[0];  // Only one exercise will be returned
 };
 

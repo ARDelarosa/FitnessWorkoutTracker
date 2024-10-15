@@ -84,7 +84,7 @@ router.post('/api/auth/register', async (req, res) => {
         const newUser = await createUser(username, hashedPassword);
 
         // Generate a token
-        const token = jwt.sign({ id: newUser.id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET, { expiresIn: '1h' });
     
         // Respond with the token and user
         res.status(201).json({ token, user: newUser });
@@ -96,6 +96,8 @@ router.post('/api/auth/register', async (req, res) => {
 // Login a user
 router.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
+
+    console.log(`Login attempt with username: ${username}`);
 
     // Ensure both fields are provided
   if (!username || !password) {
@@ -117,7 +119,7 @@ router.post('/api/auth/login', async (req, res) => {
         }
 
         // Generate a JWT token
-        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
         console.log("Generated token:", token);
         return res.json({ token, user });
     } catch (error) {
@@ -131,13 +133,44 @@ router.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Get all users
-router.get('/users', async (req, res) => {
+router.put('/api/admin/update-password', authenticateJWT, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;  // Get the logged-in user's ID from JWT
+
     try {
-        res.status(201).send(await fetchAllUsers(req.body));
-    } catch(ex) {
-      next(ex);
+        // Fetch the user from the database
+        const user = await getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if the current password matches the user's existing password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password in the database
+        await updateUser(userId, null, hashedPassword);  // Only update the password
+
+        res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
+});
+
+// Get all users
+router.get('/api/users', authenticateJWT, isAdmin, async (req, res, next) => {
+    console.log('GET /api/users called');
+  try {
+    const users = await fetchAllUsers();  // No need to pass `req.body` for a GET request
+    res.status(200).json(users);  // Use 200 status for successful GET requests
+  } catch (ex) {
+    next(ex);
+  }
 });
 
 router.get('/api/users/:id', authenticateJWT, async (req, res, next) => {
@@ -477,6 +510,7 @@ router.get('/api/exercises/reviews/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const exercise = await getExerciseWithReviews(id);
+    console.log(exercise);
     if (exercise) {
       res.json(exercise);
     } else {

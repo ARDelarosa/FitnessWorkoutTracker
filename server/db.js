@@ -1,4 +1,5 @@
 const pg = require('pg');
+const bcrypt = require('bcrypt')
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:Viper001@localhost:5432/fitness_tracker');
 
 
@@ -86,6 +87,8 @@ const createTables = async () => {
        idx_exercise_id ON reviews(exercise_id);
     `;
     await client.query(SQL);
+
+    
 };
 
 module.exports = { client, createTables };

@@ -20,6 +20,7 @@ const authenticateJWT = async (req, res, next) => {
       req.user = user; // Add the user object to the request
       next();
     } catch (error) {
+      console.error('Token verification error:', error);
       return res.status(403).json({ error: 'Invalid token' });
     }
   } else {
