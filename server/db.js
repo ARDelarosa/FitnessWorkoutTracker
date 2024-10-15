@@ -1,6 +1,6 @@
 const pg = require('pg');
 const bcrypt = require('bcrypt')
-const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:Viper001@localhost:5432/fitness_tracker');
+const client = new pg.Client(process.env.DATABASE_URL || 'postgresql://fitness_tracker_dz6e_user:0ITzq0zxhwvzwR1LkdXpOpFQ0qIJb3pM@dpg-cs4a395svqrc73880rc0-a.oregon-postgres.render.com/fitness_tracker_dz6e?sslmode=no-verify');
 
 
 const createTables = async () => {
