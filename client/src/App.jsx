@@ -10,6 +10,21 @@ import WorkoutSessionList from './components/sessions/WorkoutSessionList';
 import ExerciseList from './components/exercises/ExerciseList';
 import Reports from './components/reports/Reports';
 import WorkoutDetails from './components/workouts/WorkoutDetails';
+import AdminPanel from './components/admin/AdminAuth';
+import './App.css';
+
+// AdminRoute component for protecting admin routes
+const AdminRoute = ({ children }) => {
+  const role = localStorage.getItem('role'); // Assuming the user role is stored in localStorage
+
+  if (role !== 'admin') {
+    // If the user is not an admin, redirect to login or another route
+    return <Navigate to="/login" />;
+  }
+
+  // Render the admin route if the user is an admin
+  return children;
+};
 
 const App = () => {
   return (
@@ -18,6 +33,7 @@ const App = () => {
         <Navigation>
           <Routes>
             <Route path="/" element={<Navigation> <HomePage /> </Navigation>} />
+            <Route path="/admin-panel" element={<AdminRoute><AdminPanel /></AdminRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/workouts" element={<Navigation> <WorkoutList /> </Navigation>} />

@@ -32,13 +32,24 @@ const Login = () => {
                 return;
             }
 
+            // Store token and user info (including role) in localStorage
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', user.role);  // Store the user's role
+
             // Debugging log: Check vaules being passed to login function
             console.log("Logging in with token: ", token, "and user: ", user);
 
             // Call login function from AuthContext
             login(token, user);
 
+             // Check user role and redirect based on role
+      if (user.role === "admin") {
+        // Redirect to admin dashboard if the user is an admin
+        navigate("/admin-panel");
+      } else {
+        // Redirect to user dashboard or workouts page if the user is not an admin
             navigate("/workouts");
+      }
         } catch (err) {
             if (err.response  && err.response.status === 401) {
                 setError(" Username or password is incorrect");

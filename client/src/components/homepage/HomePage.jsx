@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../AuthContext';
+import './Home.css';
 
 const HomePage = () => {
   const { token } = useContext(AuthContext);
@@ -13,10 +14,10 @@ const HomePage = () => {
   }, [token, navigate]);
 
   return (
-    <div>
+    <div className='home-container'>
       <h1>Welcome to Fitness Tracker</h1>
       <p>Please login or sign up to get started.</p>
-      <div>
+      <div className='content-box'>
         <Link to="/login">
           <button>Login</button>
         </Link>

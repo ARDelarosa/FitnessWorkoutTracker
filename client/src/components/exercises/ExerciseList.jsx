@@ -33,14 +33,16 @@ const ExerciseList = () => {
             });
             // For each exercise, fetch its reviews
             const exercisesWithReviews = await Promise.all(
-                res.data.map(async (exercise) => {
+                res.data.map(async (exercise, index) => {
                     const exerciseDetails = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/exercises/reviews/${exercise.id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
+                    exerciseDetails.data.imageurl = res.data[index].imageurl;
                     return exerciseDetails.data;
                 })
             );
             setExercises(exercisesWithReviews);
+            console.log(exercisesWithReviews);
         } catch (err) {
             console.error("Error fetching exercises with reviews:", err);
         }
@@ -183,8 +185,7 @@ const fetchExerciseWithReviews = async (exerciseId) => {
                                     <p>Rating: {review.rating}</p>
                                     <p>{review.comment}</p>
 
-                                    {/* Comments on Review */}
-                                    <h5>Comments</h5>
+                                    {/* Edit & Delete on Review */}
                                     {review.comments && review.comments.map((comment, index) => (
                                         <div key={index}>
                                             <p>{comment.content}</p>
