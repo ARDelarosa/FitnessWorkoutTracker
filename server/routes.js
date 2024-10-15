@@ -163,12 +163,13 @@ router.put('/api/admin/update-password', authenticateJWT, async (req, res) => {
 });
 
 // Get all users
-router.get('/api/users', authenticateJWT, async (req, res, next) => {
+router.get('/api/users', async (req, res, next) => {
     console.log('GET /api/users called');
   try {
     const users = await fetchAllUsers();  // No need to pass `req.body` for a GET request
     res.status(200).json(users);  // Use 200 status for successful GET requests
   } catch (ex) {
+    console.error('Error fetching users:', ex);
     next(ex);
   }
 });

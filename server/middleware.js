@@ -12,6 +12,7 @@ const authenticateJWT = async (req, res, next) => {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       const user = await getUserById(decoded.id);
+      console.log("Decoded user:", user);
       
       if (!user) {
         return res.status(401).json({ message: 'Unauthorized' });
