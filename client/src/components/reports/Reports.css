@@ -1,0 +1,87 @@
+/* Reset some default browser styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Main container for the reports page */
+  .reports-container {
+    max-width: 1200px; /* Set a max width for better readability */
+    margin: 40px auto; /* Space at the top and bottom */
+    padding: 20px;
+    background-color: #ffffff; /* White background */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for better separation */
+  }
+  
+  /* Form styling */
+  .reports-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc; /* Add a border for better visual separation */
+    border-radius: 8px;
+    background-color: #99a0a8; /* Light background to highlight the form */
+  }
+  
+  .reports-form label {
+    display: block;
+    margin: 15px 0 5px; /* Space between label and input */
+  }
+  
+  .reports-form input[type="date"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px; /* Space between form fields */
+  }
+  
+  .reports-form button {
+    background-color: #007bff; /* Blue color for buttons */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .reports-form button:hover {
+    background-color: #0056b3; /* Darker blue for hover */
+  }
+  
+  /* Error message styling */
+  .error {
+    color: red;
+    font-weight: bold;
+    margin-top: 15px;
+  }
+  
+  /* Completion percentage styling */
+  .completion-percentage {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #007bff; /* Blue color for consistency */
+  }
+  
+  /* Workout list styling */
+  .workout-list {
+    list-style: none; /* Remove default list styling */
+    padding: 0;
+    margin-top: 30px; /* Space between the percentage and workout list */
+  }
+  
+  .workout-list-item {
+    padding: 15px;
+    border: 1px solid #ccc; /* Border around each workout */
+    border-radius: 8px;
+    margin-bottom: 15px; /* Space between workout items */
+    background-color: #ffffff; /* White background for each workout */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); /* Light shadow for visual separation */
+  }
+  
+  .workout-list-item strong {
+    color: #007bff; /* Blue color for workout name */
+  }
+  

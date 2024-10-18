@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import CommentList from "../comments/CommentList";
 import CommentForm from "../comments/CommentForm";
+import "./Worklist.css";
 
 const WorkoutList = () => {
   
@@ -159,9 +160,9 @@ const formatDate = (dateString) => {
   };
 
   return (
-    <div>
-      <h2>Welcome, {user?.username || "User"}!</h2>
-      <h1>Your Workouts</h1>
+    <div className="workout-container">
+      <h2 className="workout-header">Welcome, {user?.username || "User"}!</h2>
+      <h1 className="workout-header">Your Workouts</h1>
 
 
       <Link to="/exercises">Go to Exercises</Link>
@@ -171,7 +172,7 @@ const formatDate = (dateString) => {
       {user && user.id ? (
         // Workout Form for creating and updating
         <form onSubmit={handleWorkoutSubmit}>
-          <h3>{isEditing ? "Edit Workout" : "Create New Workout"}</h3>
+          <h3>{isEditing ? "Edit Workout" : "Create New Workout:"}</h3>
           <input
             type="text"
             name="name"
@@ -203,7 +204,7 @@ const formatDate = (dateString) => {
       )}
 
       {/* List of workouts */}
-      <ul>
+      <ul className="workout-list">
         {workouts.map((workout) => (
           <li key={workout.id}>
             <div>

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../AuthContext";
 import axios from "axios";
+import "./Reports.css";
 
 const Reports = () => {
     const { token, user } = useContext(AuthContext);
@@ -47,45 +48,46 @@ const Reports = () => {
     };
 
     return (
-        <div>
-            <h2>Workout Reports</h2>
-            <form onSubmit={handleGenerateReport}>
-                <div>
-                    <label>Start Date:</label>
-                    <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>End Date:</label>
-                    <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" disabled={!startDate || !endDate}>
-                    Generate Report
-                </button>
-            </form>
-
-            {error && <p className="error">{error}</p>}
-
-            <h3>Completion Percentage: {completionPercentage}%</h3>
-
-            <ul>
-                {workouts.map((workout) => (
-                    <li key={workout.id}>
-                        <strong>{workout.name}</strong> - {workout.scheduled_date} - Status: {workout.status}
-                    </li>
-                ))}
-            </ul>
+        <div className="reports-container">
+          <h2>Workout Reports</h2>
+          <form onSubmit={handleGenerateReport} className="reports-form">
+            <div>
+              <label>Start Date:</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label>End Date:</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" disabled={!startDate || !endDate}>
+              Generate Report
+            </button>
+          </form>
+    
+          {error && <p className="error">{error}</p>}
+    
+          <h3 className="completion-percentage">Completion Percentage: {completionPercentage}%</h3>
+    
+          <ul className="workout-list">
+            {workouts.map((workout) => (
+              <li key={workout.id} className="workout-list-item">
+                <strong>{workout.name}</strong> - {workout.scheduled_date} - Status: {workout.status}
+              </li>
+            ))}
+          </ul>
         </div>
-    );
-};
-
-export default Reports;
+      );
+    };
+    
+    export default Reports;
+    

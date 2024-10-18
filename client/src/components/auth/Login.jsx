@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 import axios from "axios";
+import "./Log-Reg.css";
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -62,7 +63,8 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleLogin}>
+      <div className="login-container">
+        <form onSubmit={handleLogin} className="login-form">
           <h2>Login</h2>
           {/* Display error message if there is one */}
           {error && <p style={{ color: "red" }}>{error}</p>}
@@ -86,6 +88,7 @@ const Login = () => {
           </div>
           <button type="submit">Login</button>
         </form>
+      </div>
       );
     };
 

@@ -8,7 +8,7 @@ const Navigation = ({ children }) => {
   const navigate = useNavigate();
 
   // Pages where the logout button should not appear
-  const noLogoutPaths = ["/login", "/signup"];
+  const noLogoutPaths = ["/", "/login", "/signup"];
 
   // Handle logout click
   const handleLogout = () => {

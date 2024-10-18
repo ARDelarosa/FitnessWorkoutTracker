@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../AuthContext";
+import "./ExerciseList.css";
 
 const ExerciseForm = ({ setExercises, selectedExercise, setSelectedExercise }) => {
     const [name, setName] = useState(selectedExercise ? selectedExercise.name : "");
@@ -75,6 +76,7 @@ const ExerciseForm = ({ setExercises, selectedExercise, setSelectedExercise }) =
     };
 
     return (
+        <div className="exercise-form">
         <form onSubmit={handleSubmit}>
             <h2>{selectedExercise ? "Edit Exercise" : "Add New Exercise"}</h2>
             <div>
@@ -106,6 +108,7 @@ const ExerciseForm = ({ setExercises, selectedExercise, setSelectedExercise }) =
             {/* Cancel Edit Button */}
             {selectedExercise && <button type="button" onClick={handleCancel}>Cancel</button>}
         </form>
+        </div>
     ); 
 };
 

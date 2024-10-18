@@ -31,6 +31,7 @@ const ChangePassword = () => {
 
   return (
     <form onSubmit={handleChangePassword}>
+      <h3>Admin Change Password</h3>
       <div>
         <label>Current Password:</label>
         <input

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../AuthContext";
 import { useParams, useLocation } from "react-router-dom";
+import "./WorkoutSessionList.css";
 
 const WorkoutSessionList = () => {
     const { workoutId } = useParams(); // Get workout ID from URL
@@ -129,58 +130,70 @@ const WorkoutSessionList = () => {
     };
 
     return (
-        <div>
-            <h1>Workout Sessions for: {workoutName}</h1>
-            <form onSubmit={handleSessionSubmit}>
-                <label>
-                    Exercise:
-                    <select name="exercise_id" value={newSession.exercise_id} onChange={handleInputChange} required>
-                        <option value="">Select Exercise</option>
-                        {exercises.map((exercise) => (
-                            <option key={exercise.id} value={exercise.id}>
-                                {exercise.name}
-                            </option>
-                        ))}
-                    </select>
-                </label>
-                <label>
-                    Sets:
-                    <input
-                        type="number"
-                        name="sets"
-                        value={newSession.sets}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </label>
-                <label>
-                    Reps:
-                    <input
-                        type="number"
-                        name="reps"
-                        value={newSession.reps}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </label>
-                <button type="submit">{isEditing ? "Update Session" : "Add Exercise"}</button>
-                {isEditing && (
-                    <button type="button" onClick={handleCancelEdit}>
-                        Cancel
-                    </button>
-                )}
-            </form>
-            <ul>
-                {sessions.map((session) => (
-                    <li key={session.id}>
-                        Exercise: {getExerciseNameById(session.exercise_id)} | Sets: {session.sets} | Reps: {session.reps}
-                        <button onClick={() => handleEditSession(session)}>Edit</button>
-                        <button onClick={() => handleDeleteSession(session.id)}>Delete</button>
-                    </li>
+        <div className="workout-session-container">
+          <h1>Workout Sessions for: {workoutName}</h1>
+          <form onSubmit={handleSessionSubmit} className="workout-session-form">
+            <label>
+              Exercise:
+              <select
+                name="exercise_id"
+                value={newSession.exercise_id}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select Exercise</option>
+                {exercises.map((exercise) => (
+                  <option key={exercise.id} value={exercise.id}>
+                    {exercise.name}
+                  </option>
                 ))}
-            </ul>
+              </select>
+            </label>
+            <label>
+              Sets:
+              <input
+                type="number"
+                name="sets"
+                value={newSession.sets}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <label>
+              Reps:
+              <input
+                type="number"
+                name="reps"
+                value={newSession.reps}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <button type="submit">{isEditing ? "Update Session" : "Add Exercise"}</button>
+            {isEditing && (
+              <button type="button" onClick={handleCancelEdit}>
+                Cancel
+              </button>
+            )}
+          </form>
+          <ul className="workout-session-list">
+            {sessions.map((session) => (
+              <li key={session.id} className="workout-session-item">
+                <div className="workout-session-item-content">
+                  <p className="exercise-name">
+                    Exercise: {getExerciseNameById(session.exercise_id)}
+                  </p>
+                  <p>Sets: {session.sets} | Reps: {session.reps}</p>
+                </div>
+                <div className="workout-session-item-buttons">
+                  <button onClick={() => handleEditSession(session)}>Edit</button>
+                  <button onClick={() => handleDeleteSession(session.id)}>Delete</button>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
-    );
+      );
 };
 
 export default WorkoutSessionList;

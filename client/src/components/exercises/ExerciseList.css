@@ -1,0 +1,152 @@
+/* Reset some default browser styles to avoid centering issues */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+/* Main container for the exercise page */
+.exercise-container {
+    max-width: 1200px; /* Set a max width for better readability */
+    margin: 40px auto; /* Increase margin to ensure enough space at the top */
+    padding: 20px;
+    background-color: #ffffff; /* White background */
+    border-radius: 8px;
+}
+
+/* Exercise list styles */
+.exercise-list {
+    list-style: none; /* Remove default list styling */
+    padding: 0;
+}
+
+/* Individual exercise item styles */
+.exercise-item {
+    display: flex;
+    align-items: flex-start; /* Align items to the top for a clean left-aligned layout */
+    padding: 20px;
+    border-bottom: 1px solid #ccc; /* Add a line to separate each exercise */
+    margin-bottom: 30px; /* Increase space between exercise items */
+}
+
+.exercise-item img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-right: 30px; /* Increase space between image and text */
+    border: 4px solid #5d82aa; /* Blue border for images */
+    border-radius: 8px;
+}
+
+.exercise-item-content {
+    flex-grow: 1; /* Ensure text takes up the remaining space */
+}
+
+.exercise-item h3 {
+    margin: 10px 0;
+    color: #007bff; /* Blue color for exercise titles */
+}
+
+.exercise-item p {
+    margin: 10px 0; /* Spacing between paragraphs */
+    line-height: 1.6; /* Improve readability */
+}
+
+/* Review form styles */
+.exercise-item form {
+    margin-top: 20px; /* Space between the exercise details and the form */
+}
+
+.exercise-item label {
+    display: block;
+    margin: 15px 0 8px; /* Increase space between label and input/textarea */
+}
+
+.exercise-item input[type="number"],
+.exercise-item textarea {
+    width: 100%; /* Full width to avoid horizontal alignment issues */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px; /* Increase space between form fields */
+}
+
+/* Review section styling */
+.exercise-item .review {
+    margin-top: 20px; /* Add more margin between reviews and form */
+    padding: 15px;
+    background-color: #f9f9f9; /* Light background for reviews */
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styling */
+.exercise-item button {
+    background-color: #007bff; /* Blue color for buttons */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 10px 0 0; /* Space between buttons and above */
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.exercise-item button:hover {
+    background-color: #0056b3; /* Darker blue for hover */
+}
+
+/* Additional Spacing for Reviews Section */
+.reviews-container {
+    margin-top: 30px; /* Space between reviews and the rest of the content */
+}
+
+/* Additional Styling for the Container to Avoid Top Content Cut-off */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styling for the Main Content */
+main {
+    flex-grow: 1;
+}
+
+/* Exercise form styles */
+.exercise-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .exercise-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .exercise-form input,
+  .exercise-form textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .exercise-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .exercise-form button:hover {
+    background-color: #0056b3;
+  }
+  

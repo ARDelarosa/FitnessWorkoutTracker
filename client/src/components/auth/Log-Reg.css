@@ -1,0 +1,51 @@
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height of the viewport */
+  }
+
+  .login-form {
+    background-color: #ffffff; /* White background for contrast */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px; /* Set a fixed width for the form */
+  }
+  
+  .login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .login-form div {
+    margin-bottom: 15px; /* Space between form fields */
+  }
+  
+  .login-form label {
+    display: block;
+    margin-bottom: 5px; /* Space between label and input */
+  }
+  
+  .login-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff; /* Blue color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px; /* Space above the button */
+  }
+  
+  .login-form button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }

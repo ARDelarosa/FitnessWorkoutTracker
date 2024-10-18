@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../AuthContext";
 import axios from "axios";
 import ExerciseForm from "./ExerciseForm";
+import "./ExerciseList.css";
 
 const ExerciseList = () => {
     const { token } = useContext(AuthContext);
@@ -134,20 +135,21 @@ const fetchExerciseWithReviews = async (exerciseId) => {
     };
 
     return (
-        <div>
+        <div className="exercise-container">
             <h2>Exercises</h2>
-            <ul>
+            <ul className="exercise-list">
                 {exercises.map((exercise) => (
-                    <li key={exercise.id}>
+                    <li key={exercise.id} className="exercise-item">
                         <img
                             src={exercise.imageurl}
                             alt={exercise.name}
                             style={{ width: "100px", height: "100px", objectFit: "cover" }}
                         />
-                        <h3>{exercise.name}</h3>
-                        <p>{exercise.description}</p>
-                        <p>Average Rating: {exercise.avg_rating}</p>
-
+                        <div className="exercise-item-content">
+                            <h3>{exercise.name}</h3>
+                            <p>{exercise.description}</p>
+                            <p>Average Rating: {exercise.avg_rating}</p>
+                        </div>
                         {/* Review Form */}
                         <h4>Submit a Review</h4>
                         <form onSubmit={(e) => {

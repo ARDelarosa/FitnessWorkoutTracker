@@ -1,29 +1,40 @@
-
-body {
-  background-color: #d6d5da; /* Light gray */
-  font-family: Arial, sans-serif;
-  color: #007bff; /* Dark gray */
+/* Reset styles for the body and HTML */
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal overflow issues */
 }
 
+body {
+  background-color: #cbcacf; /* Optional background */
+  font-family: Arial, sans-serif;
+  display: block; /* Ensure content flows naturally */
+}
+
+/* Header styling */
 header {
-  background-color: #3e4246; /* Blue */
+  background-color: #3e4046; 
   color: white;
   padding: 20px;
   text-align: center;
 }
 
+/* Container styling */
 .container {
   padding: 20px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px auto; /* Ensure containers have some space */
+  max-width: 1200px; /* Limit width for better readability */
 }
 
+/* Button styling */
 button {
-  background-color: #007bff; /* Blue */
-  color: white;
+  background-color: white;
+  color: #0056b3;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -31,9 +42,10 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3; /* Darker blue for hover */
+  background-color: #e7e6a4; /* Darker blue for hover */
 }
 
+/* Footer styling */
 footer {
   background-color: #333; /* Dark gray */
   color: white;

@@ -1,0 +1,92 @@
+
+.workout-container {
+    margin: 40px; /* Adds space around the entire container */
+    padding: 20px; /* Adds padding inside the container */
+    background-color: #ffffff; /* White background for better contrast */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .workout-header {
+    color: #007bff;
+    margin-bottom: 20px;
+    text-decoration: underline 2px #007bff;
+    text-underline-offset: 8px;
+    animation: meteor-shower-anim linear 1400ms infinite forwards
+}
+     
+    .workout-header :nth-of-type(1) {animation-delay: 0ms}
+    .workout-header :nth-of-type(2) {animation-delay: 100ms}
+    .workout-header :nth-of-type(3) {animation-delay: 200ms}
+    .workout-header :nth-of-type(4) {animation-delay: 300ms}
+    .workout-header :nth-of-type(5) {animation-delay: 400ms}
+    .workout-header :nth-of-type(6) {animation-delay: 500ms}
+    .workout-header :nth-of-type(7) {animation-delay: 600ms}
+    .workout-header :nth-of-type(8) {animation-delay: 700ms}
+    .workout-header :nth-of-type(9) {animation-delay: 800ms}
+    .workout-header :nth-of-type(10) {animation-delay: 900ms}
+    .workout-header :nth-of-type(11) {animation-delay: 1000ms}
+    .workout-header :nth-of-type(12) {animation-delay: 1100ms}
+    .workout-header :nth-of-type(13) {animation-delay: 1200ms}
+     
+@keyframes meteor-shower-anim {
+  0% { text-decoration-color: DarkOrange }
+  10% { text-decoration-color: LightYellow }
+  70% { text-decoration-color: #007bff }
+}
+  
+  .workout-form {
+    margin-top: 20px;
+  }
+  
+  .workout-form input {
+    display: block;
+    width: calc(100% - 20px); /* Full width minus the padding/margin */
+    padding: 10px;
+    margin-bottom: 15px; /* Space between input fields */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .workout-form button {
+    background-color: #007bff; /* Blue color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px; /* Space above the button */
+  }
+  
+  .workout-form button:hover {
+    background-color: #0056b3; /* Darker blue for hover */
+  }
+  
+  .workout-list {
+    margin-top: 30px;
+  }
+  
+  .workout-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-bottom: 1px solid #ccc; /* Adds a line to separate items */
+  }
+  
+  .workout-item button {
+    margin-right: 10px; /* Space between buttons */
+    padding: 8px 15px;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .workout-item button:hover {
+    background-color: #0056b3;
+  }
+  
+  .comment-section {
+    margin-top: 15px;
+  }
+  

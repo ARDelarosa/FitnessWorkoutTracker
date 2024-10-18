@@ -1,0 +1,102 @@
+/* Reset some default browser styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Main container for the workout session page */
+  .workout-session-container {
+    max-width: 1200px; /* Set a max width for better readability */
+    margin: 40px auto; /* Space at the top and bottom */
+    padding: 20px;
+    background-color: #ffffff; /* White background */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for better separation */
+  }
+  
+  /* Form styling */
+  .workout-session-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc; /* Add a border for better visual separation */
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Light background to highlight the form */
+  }
+  
+  .workout-session-form label {
+    display: block;
+    margin: 15px 0 5px; /* Space between label and input */
+  }
+  
+  .workout-session-form select,
+  .workout-session-form input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px; /* Space between form fields */
+  }
+  
+  .workout-session-form button {
+    background-color: #007bff; /* Blue color for buttons */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    margin-right: 10px; /* Space between buttons */
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .workout-session-form button:hover {
+    background-color: #0056b3; /* Darker blue for hover */
+  }
+  
+  /* Workout sessions list styling */
+.workout-session-list {
+    list-style: none; /* Remove default list styling */
+    padding: 0;
+    margin-top: 30px; /* Space between form and session list */
+    max-width: 800px; /* Limit the width for better readability */
+    margin-left: auto; /* Center the list horizontally */
+    margin-right: auto; /* Center the list horizontally */
+  }
+  
+  /* Styling for each workout session item */
+.workout-session-item {
+    display: flex; /* Use Flexbox to arrange content */
+    justify-content: space-between; /* Space between content and buttons */
+    align-items: center; /* Align items vertically */
+    padding: 20px;
+    border: 1px solid #ccc; /* Border around each session */
+    border-radius: 8px;
+    margin-bottom: 25px; /* Increase space between sessions */
+    background-color: #ffffff; /* White background for each session */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); /* Light shadow for visual separation */
+  }
+  
+  /* Styling for workout session content (text) */
+  .workout-session-item-content {
+    flex-grow: 1; /* Take up available space, pushing buttons to the right */
+  }
+  
+  /* Styling for workout session buttons */
+  .workout-session-item-buttons {
+    display: flex; /* Use Flexbox for buttons */
+    gap: 10px; /* Space between buttons */
+  }
+  
+  /* Styling for each button */
+  .workout-session-item button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .workout-session-item button:hover {
+    background-color: #0056b3; /* Darker blue for hover */
+  }
