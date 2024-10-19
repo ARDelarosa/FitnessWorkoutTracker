@@ -59,7 +59,6 @@ const init = async () => {
     console.log('Tables created');
 
     await seedExercises();
-    console.log('Exercises seeded');
 
     const hashedPassword = await Promise.all([
         bcrypt.hash('admim_pw', 10), // Admin password
@@ -82,7 +81,6 @@ const init = async () => {
       ]);
 
       console.log('Dummy users created', admin, regularUser)
-      console.log(await getAllExercises());
     
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);

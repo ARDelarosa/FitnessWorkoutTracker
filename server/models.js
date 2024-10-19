@@ -68,7 +68,6 @@ const deleteUser = async (id) => {
 
   // Workout model functions
   const createWorkout = async (userId, name, scheduledDate, status) => {
-    console.log("Creating workout in DB with:", userId, name, scheduledDate, status);
       const SQL = `
         INSERT INTO workouts (user_id, name, scheduled_date, status)
         VALUES ($1, $2, $3, $4)
@@ -178,12 +177,7 @@ const deleteUser = async (id) => {
   
   // Workout Session Model Functions
   const createWorkoutSession = async (userId, workoutId, exerciseId, sets, reps) => {
-    console.log("Creating workout session for workout_id:", workoutId); // Add logging here
-    console.log("User ID:", userId);
-    console.log("Exercise ID:", exerciseId);
-    console.log("Sets:", sets);
-    console.log("Reps:", reps);
-
+    
     const SQL = `
       INSERT INTO workout_sessions (user_id, workout_id, exercise_id, sets, reps)
       VALUES ($1, $2, $3, $4, $5)
@@ -191,7 +185,6 @@ const deleteUser = async (id) => {
     `;
     try {
         const result = await client.query(SQL, [userId, workoutId, exerciseId, sets, reps]);
-        console.log("Workout session created:", result.rows[0]);
         return result.rows[0];
     } catch (error) {
         console.error("Error creating workout session:", error.message);
@@ -313,7 +306,6 @@ const getExerciseWithReviews = async (exerciseId) => {
     GROUP BY e.id;
   `;
   const result = await client.query(SQL, [exerciseId]);
-  console.log(result.rows);
   return result.rows[0];  // Only one exercise will be returned
 };
 

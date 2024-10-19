@@ -97,8 +97,6 @@ router.post('/api/auth/register', async (req, res) => {
 router.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
 
-    console.log(`Login attempt with username: ${username}`);
-
     // Ensure both fields are provided
   if (!username || !password) {
     return res.status(400).json({ message: 'Username and password are required' });
@@ -107,7 +105,6 @@ router.post('/api/auth/login', async (req, res) => {
     try {
         // Find the user by username
         const user = await getUserByUsername(username);
-        console.log("Fetched user:", user);
         if (!user) {
             res.status(401).json({ message: 'Invalid username' });
         }
@@ -120,7 +117,6 @@ router.post('/api/auth/login', async (req, res) => {
 
         // Generate a JWT token
         const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
-        console.log("Generated token:", token);
 
        // Return the token and the sanitized user object
         return res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
@@ -166,7 +162,6 @@ router.put('/api/admin/update-password', authenticateJWT, async (req, res) => {
 
 // Get all users
 router.get('/api/users', async (req, res, next) => {
-    console.log('GET /api/users called');
   try {
     const users = await fetchAllUsers();  // No need to pass `req.body` for a GET request
     res.status(200).json(users);  // Use 200 status for successful GET requests
@@ -177,7 +172,6 @@ router.get('/api/users', async (req, res, next) => {
 });
 
 router.get('/api/users/:id', authenticateJWT, async (req, res, next) => {
-   console.log('req.user', req.user);
     try {
         if(req.params.id !== req.user.id){
           const error = Error('not authorized');
@@ -260,8 +254,6 @@ router.get('/api/workouts/:workout_id', async (req, res) => {
 router.post('/api/workouts/:user_id', authenticateJWT, async (req, res) => {
     const {  name, scheduled_date, status } = req.body;
     const user_id = req.user.id; // the authenticated user's ID
-    console.log("Request body:", req.body);
-    console.log("User ID:", user_id);
     try {
         const workout = await createWorkout(user_id, name, scheduled_date, status);
         res.status(201).json(workout);
@@ -368,8 +360,6 @@ router.post('/api/workout_sessions', authenticateJWT, verifyUserOwnsWorkout, asy
     const { workout_id, exercise_id, sets, reps} = req.body;
     const user_id = req.user.id; // the authenticated user's ID
 
-    console.log('Request Body:', req.body);
-
     try {
         if (!workout_id) {
             return res.status(400).json({ message: 'workout_id is required' });
@@ -385,7 +375,6 @@ router.post('/api/workout_sessions', authenticateJWT, verifyUserOwnsWorkout, asy
 
 // update an existing workout session (only if the user owns the workout)
 router.put('/api/workouts/sessions/:id', authenticateJWT, verifyUserOwnsWorkout, async (req, res) => {
-  console.log("request body", req.body);
     const { id } = req.params;
     const {workout_id, exercise_id, sets, reps } = req.body;
     try {
@@ -513,7 +502,6 @@ router.get('/api/exercises/reviews/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const exercise = await getExerciseWithReviews(id);
-    console.log(exercise);
     if (exercise) {
       res.json(exercise);
     } else {

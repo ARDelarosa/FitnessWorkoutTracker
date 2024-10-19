@@ -43,7 +43,6 @@ const seedExercises = async () => {
                 RETURNING *;`,
                 [exercise.name, exercise.description, exercise.imageUrl]
             );
-            console.log('Seeded exercise:', result.rows[0]);
         }));
     } catch (err) {
         console.error('Error seeding exercises:', err.message);

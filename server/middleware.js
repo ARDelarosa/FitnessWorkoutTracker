@@ -12,7 +12,6 @@ const authenticateJWT = async (req, res, next) => {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       const user = await getUserById(decoded.id);
-      console.log("Decoded user:", user);
       
       if (!user) {
         return res.status(401).json({ message: 'Unauthorized' });
@@ -93,7 +92,6 @@ const verifyUserOwnsComment = async (req, res, next) => {
 
 
 const isAdmin = (req, res, next) => {
-  console.log("User role in Admin middleware: ", req.user.role);
   if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Access forbidden: Admins only' });
   }
