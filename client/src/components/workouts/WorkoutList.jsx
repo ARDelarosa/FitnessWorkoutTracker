@@ -51,7 +51,6 @@ const formatDate = (dateString) => {
     if (user && user.id) {
       fetchWorkouts();
     }
-    console.log("user object in WorkoutList:", user);
   }, [token, user]);
 
 

@@ -20,8 +20,6 @@ const WorkoutForm = () => {
       // Format `scheduledDate` to YYYY-MM-DD (date only)
     const formattedDate = new Date(scheduledDate).toISOString().split('T')[0];
 
-    console.log("Submitting workout with:", { userId: user.id, name, formattedDate, status, token });
-
       try {
         await axios.post(`/api/workouts/${user.id}`, { name, scheduled_date: formattedDate, status }, {
           headers: { Authorization: `Bearer ${token}` },

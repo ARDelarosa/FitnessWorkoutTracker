@@ -19,8 +19,6 @@ const SignUp = () => {
                 password,
             });
 
-            console.log("Response from register:", res.data);
-
             // On successful registration, login the user by storing the token in local storage
             login(res.data.token, res.data.user);
 

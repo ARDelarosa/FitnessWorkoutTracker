@@ -24,7 +24,7 @@ const Login = () => {
             });
 
             //Debugging log: Check repsonse data from backend
-            console.log("Response from backend: ", res.data);
+            //console.log("Response from backend: ", res.data);
 
             // Check that token and user data are present
             const { token, user } = res.data;
@@ -39,7 +39,7 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify({ id: user.id, username: user.username, role: user.role }));
 
             // Debugging log: Check vaules being passed to login function
-            console.log("Logging in with token: ", token, "and user: ", user);
+            //console.log("Logging in with token: ", token, "and user: ", user);
 
             // Call login function from AuthContext
             login(token, user);

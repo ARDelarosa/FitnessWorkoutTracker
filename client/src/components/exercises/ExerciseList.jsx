@@ -42,7 +42,6 @@ const ExerciseList = () => {
                 })
             );
             setExercises(exercisesWithReviews);
-            console.log(exercisesWithReviews);
         } catch (err) {
             console.error("Error fetching exercises with reviews:", err);
         }

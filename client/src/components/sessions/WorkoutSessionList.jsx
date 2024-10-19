@@ -16,9 +16,6 @@ const WorkoutSessionList = () => {
     const location = useLocation(); // Use useLocation to get workout name
     const workoutName = location.state?.workoutName || "Unnamed Workout"; // Get from query params
 
-    console.log("Received state object:", location.state)
-    console.log(`Received workoutName: ${workoutName}`);
-
     // Fetch workout sessions
     useEffect(() => {
         const fetchSessions = async () => {

@@ -115,10 +115,18 @@ const deleteUser = async (id) => {
     const SQL = `
       DELETE FROM workouts
       WHERE user_id = $1 AND id = $2
-      RETURNING *
+      RETURNING *;
     `;
-    await client.query(SQL, [user_id, id]);
-  };
+    const result = await client.query(SQL, [user_id, id]);
+
+    // If no workout was deleted, return null
+    if (result.rows.length === 0) {
+        return null;
+    }
+
+    // Return the deleted workout's details
+    return result.rows[0];
+};
 
   // Exercise model functions
   const createExercise = async (name, description) => {

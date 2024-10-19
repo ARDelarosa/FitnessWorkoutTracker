@@ -275,15 +275,22 @@ router.put('/api/workouts/:workout_id', async (req, res) => {
 
 router.delete('/api/users/:user_id/workouts/:id', authenticateJWT, async (req, res, next) => {
     try {
-        if(req.params.user_id !== req.user.id){
-            const error = Error('not authorized');
+        if (req.params.user_id !== req.user.id) {
+            const error = new Error('Not authorized');
             error.status = 401;
             throw error;
-          }
-        await deleteWorkout({user_id: req.params.user_id, id: req.params.id});
+        }
+
+        // Call deleteWorkout function and check if the workout was deleted
+        const deletedWorkout = await deleteWorkout({ user_id: req.params.user_id, id: req.params.id });
+
+        if (!deletedWorkout) {
+            return res.status(404).json({ message: 'Workout not found' });
+        }
+
         res.status(204).end();
     } catch (error) {
-        next(error)
+        next(error);
     }
 });
 

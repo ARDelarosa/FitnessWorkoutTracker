@@ -15,15 +15,12 @@ const AdminPanel = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem('token');
-        console.log("Token:", token);
         const user = JSON.parse(localStorage.getItem('user'));
 
         if (!token || !user || user.role !== 'admin') {
             console.error("Unauthorized access: Not an admin or missing token");
             return;  // Handle unauthorized access here
           }
-
-          console.log("Token:", token);
 
         const response = await axios.get(`https://fitnessworkouttracker-1.onrender.com/api/users`, {
           headers: { Authorization: `Bearer ${token}` }

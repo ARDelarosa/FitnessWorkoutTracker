@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
       }
       
       try {
-        return JSON.parse(storedUser);
+        return JSON.parse(storedUser)
       } catch (error) { 
         console.error("Error parsing stored user:", error);
         return null;
@@ -38,15 +38,12 @@ export const AuthProvider = ({ children }) => {
         } else {
         localStorage.removeItem("user");
         }
-        console.log("User object from localStorage:", user);
     }, [user]);
 
     const login = (token, userData) => {
         // Remove sensitive information like password from userData
         const sanitizedUser = { ...userData };
         delete sanitizedUser.password;
-
-        console.log("Logging in with sanitized user: ", sanitizedUser);
         setToken(token);
         setUser(sanitizedUser);
     };
