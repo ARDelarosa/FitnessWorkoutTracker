@@ -294,7 +294,7 @@ const deleteComment = async (id) => {
 // Reviews functionsfor non-logged in users and logged in users
 const getAllExercisesWithRatings = async () => {
   const SQL = `
-    SELECT e.id, e.name, e.description, COALESCE(AVG(r.rating), 0) as avg_rating
+    SELECT e.id, e.name, e.description, ROUND(COALESCE(AVG(r.rating), 0), 2) as avg_rating
     FROM exercises e
     LEFT JOIN reviews r ON e.id = r.exercise_id
     GROUP BY e.id
@@ -306,7 +306,7 @@ const getAllExercisesWithRatings = async () => {
 
 const getExerciseWithReviews = async (exerciseId) => {
   const SQL = `
-    SELECT e.id, e.name, e.description, e.imageurl, COALESCE(AVG(r.rating), 0) as avg_rating, 
+    SELECT e.id, e.name, e.description, e.imageurl, ROUND(COALESCE(AVG(r.rating), 0), 2) as avg_rating, 
            json_agg(json_build_object('user_id', r.user_id, 'rating', r.rating, 'comment', r.comment, 'created_at', r.created_at)) AS reviews
     FROM exercises e
     LEFT JOIN reviews r ON e.id = r.exercise_id

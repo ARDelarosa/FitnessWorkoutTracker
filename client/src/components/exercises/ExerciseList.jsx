@@ -8,10 +8,9 @@ const ExerciseList = () => {
     const { token } = useContext(AuthContext);
     const [exercises, setExercises] = useState([]);
     const [selectedExercise, setSelectedExercise] = useState(null);
-    const [reviewComment, setReviewComment] = useState('');
-    const [reviewComments, setReviewComments] = useState('');
     const [ratings, setRatings] = useState({});
     const [comments, setComments] = useState({});
+    const [selectedReview, setSelectedReview] = useState(null);
 
     // Define fetchExercises outside of useEffect so it can be reused
     const fetchExercises = async () => {
@@ -94,26 +93,11 @@ const fetchExerciseWithReviews = async (exerciseId) => {
         }
     };
 
-    // Function to submit a comment on a review
-    const handleCommentSubmit = async (reviewId, exerciseId) => {
-        try {
-            await axios.post(
-                `https://fitnessworkouttracker-1.onrender.com/api/reviews/${reviewId}/comments`,
-                { content: reviewComments[reviewId] || '' },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            // Clear the comment for the review
-            setReviewComments((prev) => ({ ...prev, [reviewId]: '' }));
-            // Refresh exercises to show the new comment
-            await fetchExerciseWithReviews(exerciseId);
-        } catch (error) {
-            console.error("Error submitting comment:", error);
-        }
-    };
-
-    // Handle change in the review comment input field for a specific review
-    const handleReviewCommentChange = (reviewId, value) => {
-        setReviewComments((prev) => ({ ...prev, [reviewId]: value }));
+    // Function to start editing a review
+    const handleEditReview = (review, exerciseId) => {
+        setSelectedReview(review);
+        setRatings((prev) => ({ ...prev, [exerciseId]: review.rating }));
+        setComments((prev) => ({ ...prev, [exerciseId]: review.comment }));
     };
 
     // Function to delete an exercise
@@ -149,14 +133,15 @@ const fetchExerciseWithReviews = async (exerciseId) => {
                             <p>{exercise.description}</p>
                             <p>Average Rating: {exercise.avg_rating}</p>
                         </div>
+
                         {/* Review Form */}
-                        <h4>Submit a Review</h4>
+                        <h4>{selectedReview ? "Edit Review" : "Submit a Review"}</h4>
                         <form onSubmit={(e) => {
                             e.preventDefault();
                             handleReviewSubmit(exercise.id);
                         }}>
                             <label>
-                                Rating:
+                                Rating: 1 (worst) - 5 (best)
                                 <input
                                     type="number"
                                     min="1"
@@ -174,7 +159,7 @@ const fetchExerciseWithReviews = async (exerciseId) => {
                                     required
                                 />
                             </label>
-                            <button type="submit">Submit Review</button>
+                            <button type="submit">{selectedReview ? "Update Review" : "Submit Review"}</button>
                         </form>
 
                         {/* Display Reviews */}
@@ -185,14 +170,8 @@ const fetchExerciseWithReviews = async (exerciseId) => {
                                     <p>Rating: {review.rating}</p>
                                     <p>{review.comment}</p>
 
-                                    {/* Edit & Delete on Review */}
-                                    {review.comments && review.comments.map((comment, index) => (
-                                        <div key={index}>
-                                            <p>{comment.content}</p>
-                                        </div>
-                                    ))}
-
-                                    
+                                    {/* Edit Review Button */}
+                                    <button onClick={() => handleEditReview(review, exercise.id)}>Edit Review</button>
                                 </div>
                             ))
                         ) : (
