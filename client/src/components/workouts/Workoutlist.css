@@ -1,6 +1,6 @@
 
 .workout-container {
-    margin: 40px; /* Adds space around the entire container */
+    margin: 100px; /* Adds space around the entire container */
     padding: 20px; /* Adds padding inside the container */
     background-color: #ffffff; /* White background for better contrast */
     border-radius: 8px;
@@ -61,7 +61,7 @@
   .workout-form button:hover {
     background-color: #0056b3; /* Darker blue for hover */
   }
-  
+
   .workout-list {
     margin-top: 30px;
   }

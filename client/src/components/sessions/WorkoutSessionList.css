@@ -8,7 +8,7 @@ html, body {
   /* Main container for the workout session page */
   .workout-session-container {
     max-width: 1200px; /* Set a max width for better readability */
-    margin: 40px auto; /* Space at the top and bottom */
+    margin: 100px auto; /* Space at the top and bottom */
     padding: 20px;
     background-color: #ffffff; /* White background */
     border-radius: 8px;

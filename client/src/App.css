@@ -6,11 +6,17 @@ html, body {
   box-sizing: border-box;
   overflow-x: hidden; /* Prevent horizontal overflow issues */
 }
+.non-home {
+  background-color: #d6d5da; /* Light gray */
+  background-image: url('https://wallpapercave.com/wp/wp2639536.jpg');
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
-body {
-  background-color: #cbcacf; /* Optional background */
-  font-family: Arial, sans-serif;
-  display: block; /* Ensure content flows naturally */
+.home-page {
+  background-color: #d6d5da; /* Light gray */
+  background-image: none; /* No background image */
 }
 
 /* Header styling */

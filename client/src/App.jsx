@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
 import Navigation from './components/navigation/Navigation';
 import HomePage from './components/homepage/HomePage';
@@ -27,10 +27,29 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
+// Function to handle applying different body classes based on the route
+const BodyClassController = () => {
+  const location = useLocation(); // Get the current route
+
+  useEffect(() => {
+    // Apply different classes based on the current path
+    if (location.pathname === '/' || location.pathname === '/home') {
+      document.body.classList.add('home-page');
+      document.body.classList.remove('non-home');
+    } else {
+      document.body.classList.add('non-home');
+      document.body.classList.remove('home-page');
+    }
+  }, [location]); // Run whenever the route changes
+
+  return null; // This component doesn't render anything
+};
+  
 const App = () => {
   return (
     <AuthProvider>
       <Router>
+        <BodyClassController />
         <Navigation>
           <Routes>
             <Route path="/" element={<Navigation> <HomePage /> </Navigation>} />

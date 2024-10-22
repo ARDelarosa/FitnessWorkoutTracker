@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import CommentList from "../comments/CommentList";
 import CommentForm from "../comments/CommentForm";
-import "./Worklist.css";
+import "./Workoutlist.css";
 
 const WorkoutList = () => {
   
