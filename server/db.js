@@ -48,7 +48,7 @@ const createTables = async () => {
     CREATE TABLE workout_sessions (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         user_id uuid REFERENCES users(id) NOT NULL,
-        workout_id uuid REFERENCES workouts(id),
+        workout_id uuid REFERENCES workouts(id) ON DELETE CASCADE,
         exercise_id uuid REFERENCES exercises(id),
         "sets" INTEGER NOT NULL DEFAULT 3,
         "reps" INTEGER NOT NULL DEFAULT 10,

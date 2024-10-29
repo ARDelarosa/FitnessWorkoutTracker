@@ -2,8 +2,6 @@ const pg = require('pg');
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
 const { client } = require('./db');
-const jwt = require('jsonwebtoken');
-const jwtSecret = process.env.secret || "shhh";
 
   // User Model Functions
   const createUser = async (username, hashedPassword, role= 'user') => {
@@ -112,21 +110,29 @@ const deleteUser = async (id) => {
   };
 
   const deleteWorkout = async ({ user_id, id }) => {
-    const SQL = `
-      DELETE FROM workouts
-      WHERE user_id = $1 AND id = $2
-      RETURNING *;
-    `;
-    const result = await client.query(SQL, [user_id, id]);
-
-    // If no workout was deleted, return null
-    if (result.rows.length === 0) {
-        return null;
+    try {
+      // Delete associated workout sessions before deleting the workout
+      await client.query(`DELETE FROM workout_sessions WHERE workout_id = $1`, [id]);
+  
+      // Now delete the workout itself
+      const SQL = `
+        DELETE FROM workouts
+        WHERE user_id = $1 AND id = $2
+        RETURNING *;
+      `;
+      const result = await client.query(SQL, [user_id, id]);
+  
+      if (result.rowCount === 0) {
+        throw new Error("Workout not found or not authorized");
+      }
+  
+      return result.rows[0];
+    } catch (error) {
+      console.error("Error deleting workout:", error);
+      throw error;
     }
-
-    // Return the deleted workout's details
-    return result.rows[0];
-};
+  };
+  
 
   // Exercise model functions
   const createExercise = async (name, description) => {
