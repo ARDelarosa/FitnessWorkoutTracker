@@ -1,6 +1,6 @@
 const pg = require('pg');
 const bcrypt = require('bcrypt')
-const client = new pg.Client(process.env.DATABASE_URL || 'postgresql://fitness_tracker_ard_user:DzZ9Nknuc4CIM196Y7vmkdj3SDHGzuMc@dpg-cv3q27lumphs73el8jhg-a.oregon-postgres.render.com/fitness_tracker_ard');
+const client = new pg.Client(process.env.DATABASE_URL || 'postgresql://fitness_tracker_ard_user:DzZ9Nknuc4CIM196Y7vmkdj3SDHGzuMc@dpg-cv3q27lumphs73el8jhg-a/fitness_tracker_ard');
 
 
 const createTables = async () => {
