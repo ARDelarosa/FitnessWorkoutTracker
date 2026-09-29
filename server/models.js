@@ -8,10 +8,11 @@ const { client } = require('./db');
     const SQL = `
     INSERT INTO users (id, username, password, role)
     VALUES ($1, $2, $3, $4)
+    ON CONFLICT (username) DO NOTHING
     RETURNING id, username, role
     `;
     const result = await client.query(SQL, [uuid.v4(), username, hashedPassword, role]);
-    return result.rows[0];
+    return result.rows[0] || null;
 };
 
 const fetchAllUsers = async () => {

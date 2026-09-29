@@ -1,10 +1,10 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const {client, createTables,} = require('./db');
 const { seedExercises } = require('./seed');
-const dotenv = require('dotenv');
-dotenv.config();
 const bcrypt = require('bcrypt');
 const routes = require('./routes');
 // Use routes
